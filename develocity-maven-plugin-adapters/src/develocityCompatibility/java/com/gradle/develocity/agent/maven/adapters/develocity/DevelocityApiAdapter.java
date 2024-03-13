@@ -1,26 +1,23 @@
-package com.gradle.develocity.agent.maven.adapters.enterprise;
+package com.gradle.develocity.agent.maven.adapters.develocity;
 
 import com.gradle.develocity.agent.maven.adapters.BuildCacheApiAdapter;
 import com.gradle.develocity.agent.maven.adapters.BuildScanApiAdapter;
-import com.gradle.develocity.agent.maven.adapters.CoreApiAdapter;
-import com.gradle.develocity.agent.maven.adapters.Property;
-import com.gradle.maven.extension.api.GradleEnterpriseApi;
+import com.gradle.develocity.agent.maven.adapters.DevelocityAdapter;
+import com.gradle.develocity.agent.maven.api.DevelocityApi;
 
 import java.net.URI;
 import java.nio.file.Path;
 
-public class GradleEnterpriseApiAdapter implements CoreApiAdapter {
+public class DevelocityApiAdapter implements DevelocityAdapter {
 
-    private final GradleEnterpriseApi api;
+    private final DevelocityApi api;
     private final BuildScanApiAdapter buildScan;
     private final BuildCacheApiAdapter buildCache;
-    private final Property<String> projectId;
 
-    public GradleEnterpriseApiAdapter(GradleEnterpriseApi api) {
+    public DevelocityApiAdapter(DevelocityApi api) {
         this.api = api;
-        this.buildScan = new GradleEnterpriseBuildScanApiAdapter(api.getBuildScan());
-        this.buildCache = new GradleEnterpriseBuildCacheApiAdapter(api.getBuildCache());
-        this.projectId = Property.optional(api, "setProjectId", "getProjectId");
+        this.buildScan = new DevelocityBuildScanApiAdapter(api.getBuildScan());
+        this.buildCache = new DevelocityBuildCacheApiAdapter(api.getBuildCache());
     }
 
     @Override
@@ -35,12 +32,12 @@ public class GradleEnterpriseApiAdapter implements CoreApiAdapter {
 
     @Override
     public void setProjectId(String projectId) {
-        this.projectId.set(projectId);
+        api.setProjectId(projectId);
     }
 
     @Override
     public String getProjectId() {
-        return projectId.get();
+        return api.getProjectId();
     }
 
     @Override
@@ -95,6 +92,6 @@ public class GradleEnterpriseApiAdapter implements CoreApiAdapter {
 
     @Override
     public boolean isDevelocityApi() {
-        return false;
+        return true;
     }
 }

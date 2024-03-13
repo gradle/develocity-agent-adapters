@@ -1,23 +1,26 @@
-package com.gradle.develocity.agent.maven.adapters.develocity;
+package com.gradle.develocity.agent.maven.adapters.enterprise;
 
 import com.gradle.develocity.agent.maven.adapters.BuildCacheApiAdapter;
 import com.gradle.develocity.agent.maven.adapters.BuildScanApiAdapter;
-import com.gradle.develocity.agent.maven.adapters.CoreApiAdapter;
-import com.gradle.develocity.agent.maven.api.DevelocityApi;
+import com.gradle.develocity.agent.maven.adapters.DevelocityAdapter;
+import com.gradle.develocity.agent.maven.adapters.Property;
+import com.gradle.maven.extension.api.GradleEnterpriseApi;
 
 import java.net.URI;
 import java.nio.file.Path;
 
-public class DevelocityApiAdapter implements CoreApiAdapter {
+public class GradleEnterpriseApiAdapter implements DevelocityAdapter {
 
-    private final DevelocityApi api;
+    private final GradleEnterpriseApi api;
     private final BuildScanApiAdapter buildScan;
     private final BuildCacheApiAdapter buildCache;
+    private final Property<String> projectId;
 
-    public DevelocityApiAdapter(DevelocityApi api) {
+    public GradleEnterpriseApiAdapter(GradleEnterpriseApi api) {
         this.api = api;
-        this.buildScan = new DevelocityBuildScanApiAdapter(api.getBuildScan());
-        this.buildCache = new DevelocityBuildCacheApiAdapter(api.getBuildCache());
+        this.buildScan = new GradleEnterpriseBuildScanApiAdapter(api.getBuildScan());
+        this.buildCache = new GradleEnterpriseBuildCacheApiAdapter(api.getBuildCache());
+        this.projectId = Property.optional(api, "setProjectId", "getProjectId");
     }
 
     @Override
@@ -32,12 +35,12 @@ public class DevelocityApiAdapter implements CoreApiAdapter {
 
     @Override
     public void setProjectId(String projectId) {
-        api.setProjectId(projectId);
+        this.projectId.set(projectId);
     }
 
     @Override
     public String getProjectId() {
-        return api.getProjectId();
+        return projectId.get();
     }
 
     @Override
@@ -92,6 +95,6 @@ public class DevelocityApiAdapter implements CoreApiAdapter {
 
     @Override
     public boolean isDevelocityApi() {
-        return true;
+        return false;
     }
 }
