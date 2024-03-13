@@ -22,6 +22,10 @@ package com.gradle.develocity.agent.maven.adapters;
 import java.net.URI;
 import java.util.function.Consumer;
 
+/**
+ * @see com.gradle.develocity.agent.maven.api.scan.BuildScanApi
+ * @see com.gradle.maven.extension.api.scan.BuildScanApi
+ */
 public interface BuildScanApiAdapter {
 
     void tag(String tag);

@@ -23,6 +23,10 @@ import org.gradle.api.Action;
 
 import javax.annotation.Nullable;
 
+/**
+ *  @see com.gradle.develocity.agent.gradle.scan.BuildScanConfiguration
+ *  @see com.gradle.scan.plugin.BuildScanExtension
+ */
 public interface BuildScanAdapter {
 
     void background(Action<? super BuildScanAdapter> action);
