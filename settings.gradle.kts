@@ -12,4 +12,4 @@ plugins {
 
 rootProject.name = "develocity-api-adapters"
 include("gradle-plugin-adapters")
-include("maven-plugin-adapters")
+include("maven-extension-adapters")
