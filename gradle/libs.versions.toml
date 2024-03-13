@@ -1,9 +1,6 @@
-[versions]
-commons-math3 = "3.6.1"
-guava = "32.1.2-jre"
-junit-jupiter = "5.10.0"
-
 [libraries]
-commons-math3 = { module = "org.apache.commons:commons-math3", version.ref = "commons-math3" }
-guava = { module = "com.google.guava:guava", version.ref = "guava" }
-junit-jupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit-jupiter" }
+gradle-enterprise-plugin = { module = "com.gradle:gradle-enterprise-gradle-plugin", version = "3.16.2" }
+develocity-plugin = { module = "com.gradle:develocity-gradle-plugin", version = "3.17-rc-4" }
+maven-core = { module = "org.apache.maven:maven-core", version = "3.9.6" }
+gradle-enterprise-extension = { module = "com.gradle:gradle-enterprise-maven-extension", version = "1.20.1" }
+develocity-extension = { module = "com.gradle:develocity-maven-extension", version = "1.21-rc-5" }

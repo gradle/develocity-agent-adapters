@@ -18,16 +18,18 @@ sourceSets {
     create("develocityCompatibility")
 }
 
+fun sourceSet(name: String): SourceSetOutput = sourceSets[name].output
+
 dependencies {
     "compatibilityApiCompileOnly"(gradleApi())
 
     "enterpriseCompatibilityCompileOnly"(gradleApi())
-    "enterpriseCompatibilityCompileOnly"("com.gradle:gradle-enterprise-gradle-plugin:3.16.2")
-    "enterpriseCompatibilityImplementation"(sourceSets["compatibilityApi"].output)
+    "enterpriseCompatibilityCompileOnly"(libs.gradle.enterprise.plugin)
+    "enterpriseCompatibilityImplementation"(sourceSet("compatibilityApi"))
 
     "develocityCompatibilityCompileOnly"(gradleApi())
-    "develocityCompatibilityCompileOnly"("com.gradle:develocity-gradle-plugin:3.17-rc-4")
-    "develocityCompatibilityImplementation"(sourceSets["compatibilityApi"].output)
+    "develocityCompatibilityCompileOnly"(libs.develocity.plugin)
+    "develocityCompatibilityImplementation"(sourceSet("compatibilityApi"))
 }
 
 java {
@@ -37,8 +39,8 @@ java {
 }
 
 tasks.jar {
-    from(sourceSets["compatibilityApi"].output)
-    from(sourceSets["enterpriseCompatibility"].output)
-    from(sourceSets["develocityCompatibility"].output)
+    from(sourceSet("compatibilityApi"))
+    from(sourceSet("enterpriseCompatibility"))
+    from(sourceSet("develocityCompatibility"))
 }
 
