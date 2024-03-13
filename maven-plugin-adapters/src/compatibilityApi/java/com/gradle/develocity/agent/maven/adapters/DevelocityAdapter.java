@@ -3,7 +3,7 @@ package com.gradle.develocity.agent.maven.adapters;
 import java.net.URI;
 import java.nio.file.Path;
 
-public interface CoreApiAdapter {
+public interface DevelocityAdapter {
 
     boolean isEnabled();
 

@@ -2,14 +2,14 @@ package com.gradle.develocity.agent.maven.adapters.enterprise;
 
 import com.gradle.develocity.agent.maven.adapters.BuildCacheApiAdapter;
 import com.gradle.develocity.agent.maven.adapters.BuildScanApiAdapter;
-import com.gradle.develocity.agent.maven.adapters.CoreApiAdapter;
+import com.gradle.develocity.agent.maven.adapters.DevelocityAdapter;
 import com.gradle.develocity.agent.maven.adapters.Property;
 import com.gradle.maven.extension.api.GradleEnterpriseApi;
 
 import java.net.URI;
 import java.nio.file.Path;
 
-public class GradleEnterpriseApiAdapter implements CoreApiAdapter {
+public class GradleEnterpriseApiAdapter implements DevelocityAdapter {
 
     private final GradleEnterpriseApi api;
     private final BuildScanApiAdapter buildScan;
