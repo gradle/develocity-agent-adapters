@@ -8,6 +8,7 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/gradle-plugin-adapters" />
+            <option value="$PROJECT_DIR$/maven-plugin-adapters" />
           </set>
         </option>
       </GradleProjectSettings>

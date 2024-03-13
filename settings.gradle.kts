@@ -18,3 +18,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "develocity-api-adapters"
 include("gradle-plugin-adapters")
+include("maven-plugin-adapters")
