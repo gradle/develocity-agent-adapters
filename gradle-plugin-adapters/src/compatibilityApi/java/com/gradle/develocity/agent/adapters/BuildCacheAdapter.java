@@ -4,9 +4,6 @@ import org.gradle.caching.configuration.BuildCache;
 
 import javax.annotation.Nullable;
 
-/**
- * Adapter for {@link com.gradle.develocity.agent.gradle.buildcache.DevelocityBuildCache} and {@link com.gradle.ccud.adapters.enterprise.proxies.GradleEnterpriseBuildCacheProxy}
- */
 public interface BuildCacheAdapter extends BuildCache {
 
     @Nullable
