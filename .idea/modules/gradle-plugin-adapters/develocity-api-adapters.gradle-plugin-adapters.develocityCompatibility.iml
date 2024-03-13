@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module version="4">
+  <component name="AdditionalModuleElements">
+    <content url="file://$MODULE_DIR$/../../../gradle-plugin-adapters/src/develocityCompatibility" dumb="true">
+      <sourceFolder url="file://$MODULE_DIR$/../../../gradle-plugin-adapters/src/develocityCompatibility/java" isTestSource="false" />
+    </content>
+  </component>
+</module>
