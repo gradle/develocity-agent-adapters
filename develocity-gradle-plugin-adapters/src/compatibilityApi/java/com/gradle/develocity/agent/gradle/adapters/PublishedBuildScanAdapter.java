@@ -21,6 +21,10 @@ package com.gradle.develocity.agent.gradle.adapters;
 
 import java.net.URI;
 
+/**
+ * @see com.gradle.develocity.agent.gradle.scan.PublishedBuildScan
+ * @see com.gradle.scan.plugin.PublishedBuildScan
+ */
 public interface PublishedBuildScanAdapter {
 
     String getBuildScanId();

@@ -27,10 +27,18 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 
+/**
+ * @see com.gradle.develocity.agent.maven.api.cache.MojoMetadataProvider
+ * @see com.gradle.maven.extension.api.cache.MojoMetadataProvider
+ */
 public interface MojoMetadataProviderAdapter {
 
     void provideMetadata(Context context);
 
+    /**
+     * @see com.gradle.develocity.agent.maven.api.cache.MojoMetadataProvider.Context
+     * @see com.gradle.maven.extension.api.cache.MojoMetadataProvider.Context
+     */
     interface Context {
         Object getUnderlyingObject();
 
@@ -58,12 +66,20 @@ public interface MojoMetadataProviderAdapter {
 
         Context iterate(String propertyName, Consumer<? super Context> action);
 
+        /**
+         * @see com.gradle.develocity.agent.maven.api.cache.MojoMetadataProvider.Context.LocalState
+         * @see com.gradle.maven.extension.api.cache.MojoMetadataProvider.Context.LocalState
+         */
         interface LocalState {
             LocalState files(String propertyName);
 
             LocalState files(String propertyName, Object value);
         }
 
+        /**
+         * @see com.gradle.develocity.agent.maven.api.cache.MojoMetadataProvider.Context.Outputs
+         * @see com.gradle.maven.extension.api.cache.MojoMetadataProvider.Context.Outputs
+         */
         interface Outputs {
             Outputs file(String propertyName);
 
@@ -80,6 +96,10 @@ public interface MojoMetadataProviderAdapter {
             Outputs storeEnabled(boolean enabled);
         }
 
+        /**
+         * @see com.gradle.develocity.agent.maven.api.cache.MojoMetadataProvider.Context.FileSet
+         * @see com.gradle.maven.extension.api.cache.MojoMetadataProvider.Context.FileSet
+         */
         interface FileSet {
             FileSet includesProperty(String includePropertyName);
 
@@ -103,16 +123,28 @@ public interface MojoMetadataProviderAdapter {
 
             FileSet lineEndingHandling(LineEndingHandling lineEndingHandling);
 
+            /**
+             * @see com.gradle.develocity.agent.maven.api.cache.MojoMetadataProvider.Context.FileSet.LineEndingHandling
+             * @see com.gradle.maven.extension.api.cache.MojoMetadataProvider.Context.FileSet.LineEndingHandling
+             */
             enum LineEndingHandling {
                 DEFAULT,
                 NORMALIZE
             }
 
+            /**
+             * @see com.gradle.develocity.agent.maven.api.cache.MojoMetadataProvider.Context.FileSet.EmptyDirectoryHandling
+             * @see com.gradle.maven.extension.api.cache.MojoMetadataProvider.Context.FileSet.EmptyDirectoryHandling
+             */
             enum EmptyDirectoryHandling {
                 DEFAULT,
                 IGNORE
             }
 
+            /**
+             * @see com.gradle.develocity.agent.maven.api.cache.MojoMetadataProvider.Context.FileSet.NormalizationStrategy
+             * @see com.gradle.maven.extension.api.cache.MojoMetadataProvider.Context.FileSet.NormalizationStrategy
+             */
             enum NormalizationStrategy {
                 ABSOLUTE_PATH,
                 CLASSPATH,
@@ -123,6 +155,10 @@ public interface MojoMetadataProviderAdapter {
             }
         }
 
+        /**
+         * @see com.gradle.develocity.agent.maven.api.cache.MojoMetadataProvider.Context.Inputs
+         * @see com.gradle.maven.extension.api.cache.MojoMetadataProvider.Context.Inputs
+         */
         interface Inputs {
             Inputs properties(String... propertyNames);
 

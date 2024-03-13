@@ -24,6 +24,10 @@ import org.gradle.caching.configuration.AbstractBuildCache;
 
 import javax.annotation.Nullable;
 
+/**
+ *  @see com.gradle.develocity.agent.gradle.DevelocityConfiguration
+ *  @see com.gradle.enterprise.gradleplugin.GradleEnterpriseExtension
+ */
 public interface DevelocityAdapter {
 
     BuildScanAdapter getBuildScan();

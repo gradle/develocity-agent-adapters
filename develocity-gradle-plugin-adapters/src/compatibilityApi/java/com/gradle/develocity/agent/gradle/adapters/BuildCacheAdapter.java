@@ -23,6 +23,10 @@ import org.gradle.caching.configuration.BuildCache;
 
 import javax.annotation.Nullable;
 
+/**
+ *  @see com.gradle.develocity.agent.gradle.buildcache.DevelocityBuildCache
+ *  @see com.gradle.enterprise.gradleplugin.GradleEnterpriseBuildCache
+ */
 public interface BuildCacheAdapter extends BuildCache {
 
     @Nullable

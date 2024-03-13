@@ -21,6 +21,10 @@ package com.gradle.develocity.agent.maven.adapters;
 
 import java.time.Duration;
 
+/**
+ * @see com.gradle.develocity.agent.maven.api.cache.CleanupPolicy
+ * @see com.gradle.maven.extension.api.cache.CleanupPolicy
+ */
 public interface CleanupPolicyAdapter {
 
     boolean isEnabled();

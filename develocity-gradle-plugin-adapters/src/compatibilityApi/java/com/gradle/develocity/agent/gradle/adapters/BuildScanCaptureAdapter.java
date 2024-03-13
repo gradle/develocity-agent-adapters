@@ -19,6 +19,10 @@
 
 package com.gradle.develocity.agent.gradle.adapters;
 
+/**
+ *  @see com.gradle.develocity.agent.gradle.scan.BuildScanCaptureConfiguration
+ *  @see com.gradle.scan.plugin.BuildScanCaptureSettings
+ */
 public interface BuildScanCaptureAdapter {
 
     void setFileFingerprints(boolean capture);

@@ -23,6 +23,10 @@ import java.net.InetAddress;
 import java.util.List;
 import java.util.function.Function;
 
+/**
+ *  @see com.gradle.develocity.agent.gradle.scan.BuildScanDataObfuscationConfiguration
+ *  @see com.gradle.scan.plugin.BuildScanDataObfuscation
+ */
 public interface BuildScanObfuscationAdapter {
 
     void username(Function<? super String, ? extends String> obfuscator);

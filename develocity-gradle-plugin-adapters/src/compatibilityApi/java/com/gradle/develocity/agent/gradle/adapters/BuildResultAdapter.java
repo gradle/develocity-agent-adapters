@@ -21,6 +21,10 @@ package com.gradle.develocity.agent.gradle.adapters;
 
 import java.util.List;
 
+/**
+ *  @see com.gradle.develocity.agent.gradle.scan.BuildResult
+ *  @see com.gradle.scan.plugin.BuildResult
+ */
 public interface BuildResultAdapter {
 
     List<Throwable> getFailures();

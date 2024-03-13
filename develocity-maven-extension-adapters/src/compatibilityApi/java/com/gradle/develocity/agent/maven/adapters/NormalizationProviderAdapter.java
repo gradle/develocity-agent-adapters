@@ -26,10 +26,18 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 
+/**
+ * @see com.gradle.develocity.agent.maven.api.cache.NormalizationProvider
+ * @see com.gradle.maven.extension.api.cache.NormalizationProvider
+ */
 public interface NormalizationProviderAdapter {
 
     void configureNormalization(Context context);
 
+    /**
+     * @see com.gradle.develocity.agent.maven.api.cache.NormalizationProvider.SystemPropertiesNormalization
+     * @see com.gradle.maven.extension.api.cache.NormalizationProvider.SystemPropertiesNormalization
+     */
     interface SystemPropertiesNormalization {
         default SystemPropertiesNormalization setIgnoredKeys(String... systemPropertyNames) {
             return setIgnoredKeys(Arrays.asList(systemPropertyNames));
@@ -44,6 +52,10 @@ public interface NormalizationProviderAdapter {
         SystemPropertiesNormalization addIgnoredKeys(List<String> systemPropertyNames);
     }
 
+    /**
+     * @see com.gradle.develocity.agent.maven.api.cache.NormalizationProvider.RuntimeClasspathNormalization
+     * @see com.gradle.maven.extension.api.cache.NormalizationProvider.RuntimeClasspathNormalization
+     */
     interface RuntimeClasspathNormalization {
         RuntimeClasspathNormalization setIgnoredFiles(List<String> ignoredFiles);
 
@@ -65,6 +77,10 @@ public interface NormalizationProviderAdapter {
 
         RuntimeClasspathNormalization configureMetaInf(Consumer<MetaInf> action);
 
+        /**
+         * @see com.gradle.develocity.agent.maven.api.cache.NormalizationProvider.RuntimeClasspathNormalization.MetaInf
+         * @see com.gradle.maven.extension.api.cache.NormalizationProvider.RuntimeClasspathNormalization.MetaInf
+         */
         interface MetaInf {
             MetaInf setIgnoredAttributes(List<String> ignoredAttributes);
 
@@ -96,6 +112,10 @@ public interface NormalizationProviderAdapter {
         }
     }
 
+    /**
+     * @see com.gradle.develocity.agent.maven.api.cache.NormalizationProvider.Context
+     * @see com.gradle.maven.extension.api.cache.NormalizationProvider.Context
+     */
     interface Context {
         MavenProject getProject();
 

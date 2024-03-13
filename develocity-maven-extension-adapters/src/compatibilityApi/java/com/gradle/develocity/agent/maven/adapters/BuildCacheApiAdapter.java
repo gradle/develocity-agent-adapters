@@ -19,6 +19,10 @@
 
 package com.gradle.develocity.agent.maven.adapters;
 
+/**
+ * @see com.gradle.develocity.agent.maven.api.cache.BuildCacheApi
+ * @see com.gradle.maven.extension.api.cache.BuildCacheApi
+ */
 public interface BuildCacheApiAdapter {
 
     LocalBuildCacheAdapter getLocal();
