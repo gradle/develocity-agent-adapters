@@ -1,0 +1,28 @@
+= Develocity Plugin/Extension Adapters
+
+Starting with versions 3.17 and 1.21 respectively, the https://gradle.com/[Gradle Enterprise] Gradle plugin and Maven extension are available under the “Develocity” brand.
+Several core functionalities have been deprecated with the rebranding.
+This repository provides an adapter classes for both versions of the API to enable a smooth upgrade to the new API and support developers in providing compatibility with both “Gradle Enterprise” and “Develocity” plugins/extensions.
+
+== Adapters
+
+All adapters are located in the `com.gradle.develocity.agent.(gradle|maven).adapters`.
+See the in-code documentation for the corresponding Gradle plugin or Maven extension classes.
+
+== Usage
+
+.Gradle
+[source,kotlin]
+----
+implementation("com.gradle:develocity-gradle-plugin-adapters:1.0")
+----
+
+.Maven
+[source,xml]
+----
+<dependency>
+    <groupId>com.gradle</groupId>
+    <artifactId>develocity-maven-extension-adapters</artifactId>
+    <version>1.0</version>
+</dependency>
+----
