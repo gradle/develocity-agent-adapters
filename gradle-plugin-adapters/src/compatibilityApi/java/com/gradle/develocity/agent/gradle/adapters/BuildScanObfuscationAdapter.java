@@ -1,4 +1,4 @@
-package com.gradle.develocity.agent.adapters;
+package com.gradle.develocity.agent.gradle.adapters;
 
 import java.net.InetAddress;
 import java.util.List;

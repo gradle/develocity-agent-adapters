@@ -1,10 +1,10 @@
-package com.gradle.develocity.agent.adapters.develocity;
+package com.gradle.develocity.agent.gradle.adapters.develocity;
 
-import com.gradle.develocity.agent.adapters.BuildResultAdapter;
-import com.gradle.develocity.agent.adapters.BuildScanAdapter;
-import com.gradle.develocity.agent.adapters.BuildScanCaptureAdapter;
-import com.gradle.develocity.agent.adapters.BuildScanObfuscationAdapter;
-import com.gradle.develocity.agent.adapters.PublishedBuildScanAdapter;
+import com.gradle.develocity.agent.gradle.adapters.BuildResultAdapter;
+import com.gradle.develocity.agent.gradle.adapters.BuildScanAdapter;
+import com.gradle.develocity.agent.gradle.adapters.BuildScanCaptureAdapter;
+import com.gradle.develocity.agent.gradle.adapters.BuildScanObfuscationAdapter;
+import com.gradle.develocity.agent.gradle.adapters.PublishedBuildScanAdapter;
 import com.gradle.develocity.agent.gradle.scan.BuildScanConfiguration;
 import org.gradle.api.Action;
 import org.jetbrains.annotations.Nullable;

@@ -1,17 +1,17 @@
-package com.gradle.develocity.agent.adapters.develocity;
+package com.gradle.develocity.agent.gradle.adapters.enterprise;
 
-import com.gradle.develocity.agent.adapters.BuildScanObfuscationAdapter;
-import com.gradle.develocity.agent.gradle.scan.BuildScanDataObfuscationConfiguration;
+import com.gradle.develocity.agent.gradle.adapters.BuildScanObfuscationAdapter;
+import com.gradle.scan.plugin.BuildScanDataObfuscation;
 
 import java.net.InetAddress;
 import java.util.List;
 import java.util.function.Function;
 
-final class BuildScanDataObfuscationConfigurationAdapter implements BuildScanObfuscationAdapter {
+final class BuildScanDataObfuscationAdapter implements BuildScanObfuscationAdapter {
 
-    private final BuildScanDataObfuscationConfiguration obfuscation;
+    private final BuildScanDataObfuscation obfuscation;
 
-    BuildScanDataObfuscationConfigurationAdapter(BuildScanDataObfuscationConfiguration obfuscation) {
+    BuildScanDataObfuscationAdapter(BuildScanDataObfuscation obfuscation) {
         this.obfuscation = obfuscation;
     }
 

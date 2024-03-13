@@ -1,7 +1,7 @@
-package com.gradle.develocity.agent.adapters.develocity;
+package com.gradle.develocity.agent.gradle.adapters.develocity;
 
-import com.gradle.develocity.agent.adapters.BuildScanAdapter;
-import com.gradle.develocity.agent.adapters.DevelocityAdapter;
+import com.gradle.develocity.agent.gradle.adapters.BuildScanAdapter;
+import com.gradle.develocity.agent.gradle.adapters.DevelocityAdapter;
 import com.gradle.develocity.agent.gradle.DevelocityConfiguration;
 import org.gradle.api.Action;
 import org.gradle.caching.configuration.AbstractBuildCache;

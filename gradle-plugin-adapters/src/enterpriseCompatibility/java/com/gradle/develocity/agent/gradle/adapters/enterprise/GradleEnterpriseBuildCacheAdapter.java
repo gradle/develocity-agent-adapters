@@ -1,15 +1,15 @@
-package com.gradle.develocity.agent.adapters.develocity;
+package com.gradle.develocity.agent.gradle.adapters.enterprise;
 
-import com.gradle.develocity.agent.adapters.BuildCacheAdapter;
-import com.gradle.develocity.agent.gradle.buildcache.DevelocityBuildCache;
+import com.gradle.develocity.agent.gradle.adapters.BuildCacheAdapter;
+import com.gradle.enterprise.gradleplugin.GradleEnterpriseBuildCache;
 import org.jetbrains.annotations.Nullable;
 
-public class DevelocityBuildCacheAdapter implements BuildCacheAdapter {
+public class GradleEnterpriseBuildCacheAdapter implements BuildCacheAdapter {
 
-    private final DevelocityBuildCache buildCache;
+    private final GradleEnterpriseBuildCache buildCache;
 
-    public DevelocityBuildCacheAdapter(Object buildCache) {
-        this.buildCache = (DevelocityBuildCache) buildCache;
+    public GradleEnterpriseBuildCacheAdapter(Object buildCache) {
+        this.buildCache = (GradleEnterpriseBuildCache) buildCache;
     }
 
     @Nullable

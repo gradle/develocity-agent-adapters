@@ -1,6 +1,6 @@
-package com.gradle.develocity.agent.adapters.develocity;
+package com.gradle.develocity.agent.gradle.adapters.develocity;
 
-import com.gradle.develocity.agent.adapters.BuildScanCaptureAdapter;
+import com.gradle.develocity.agent.gradle.adapters.BuildScanCaptureAdapter;
 import com.gradle.develocity.agent.gradle.scan.BuildScanCaptureConfiguration;
 
 class BuildScanCaptureConfigurationAdapter implements BuildScanCaptureAdapter {
