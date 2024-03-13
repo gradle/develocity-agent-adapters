@@ -5,9 +5,6 @@ import org.gradle.caching.configuration.AbstractBuildCache;
 
 import javax.annotation.Nullable;
 
-/**
- * Adapter for {@link com.gradle.develocity.agent.gradle.DevelocityConfiguration} and {@link com.gradle.ccud.adapters.enterprise.proxies.GradleEnterpriseExtensionProxy}
- */
 public interface DevelocityAdapter {
 
     BuildScanAdapter getBuildScan();
