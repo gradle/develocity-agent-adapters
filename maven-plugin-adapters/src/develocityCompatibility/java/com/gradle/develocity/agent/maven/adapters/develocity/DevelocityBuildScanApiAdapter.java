@@ -147,6 +147,7 @@ class DevelocityBuildScanApiAdapter implements BuildScanApiAdapter {
     @Override
     public void publishOnDemand() {
         // on-demand publication in the new API is controlled only via -Dscan property
+        buildScan.publishing(p -> p.onlyIf(ctx -> false));
     }
 
     @Override
