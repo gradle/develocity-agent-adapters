@@ -26,3 +26,33 @@ implementation("com.gradle:develocity-gradle-plugin-adapters:1.0")
     <version>1.0</version>
 </dependency>
 ----
+
+=== Example
+In the following, we illustrate how a plugin developer can configure conditional Build Scan publication with and without adapter layer.
+
+.Without adapters
+[source,java]
+----
+// configure conditional publication for the Develocity plugin
+DevelocityConfiguration develocity = settings.getExtensions().getByType(DevelocityConfiguration.class);
+develocity.getBuildScan().publishing(p -> p.onlyIf(ctx -> Boolean.getBoolean("publish")));
+
+// configure conditional publication for Gradle Enterprise plugin
+GradleEnterpriseExtension gradleEnterprise = settings.getExtensions().getByType(GradleEnterpriseExtension.class);
+gradleEnterprise.getBuildScan().publishAlwaysIf(Boolean.getBoolean("publish"));
+----
+
+.With adapters
+[source,java]
+----
+// configure conditional publication using the unified API
+private static void publishConditionally(DevelocityAdapter develocity) {
+    develocity.getBuildScan().publishAlwaysIf(Boolean.getBoolean("publish"));
+}
+
+DevelocityConfiguration develocity = settings.getExtensions().getByType(DevelocityConfiguration.class);
+publishConditionally(new DevelocityConfigurationAdapter(develocity));
+
+GradleEnterpriseExtension gradleEnterprise = settings.getExtensions().getByType(GradleEnterpriseExtension.class);
+publishConditionally(new GradleEnterpriseExtensionAdapter(gradleEnterprise));
+----
