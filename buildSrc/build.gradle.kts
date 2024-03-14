@@ -1,7 +1,7 @@
-repositories {
-    gradlePluginPortal()
-}
-
 plugins {
     `kotlin-dsl`
+}
+
+repositories {
+    gradlePluginPortal()
 }
