@@ -1,5 +1,7 @@
+import develocity.adapters.sourceSetOutput
+
 plugins {
-    java
+    id("develocity.adapters-library")
 }
 
 repositories {
@@ -12,35 +14,14 @@ repositories {
     }
 }
 
-sourceSets {
-    create("compatibilityApi")
-    create("enterpriseCompatibility")
-    create("develocityCompatibility")
-}
-
-fun sourceSet(name: String): SourceSetOutput = sourceSets[name].output
-
 dependencies {
     "compatibilityApiCompileOnly"(gradleApi())
 
     "enterpriseCompatibilityCompileOnly"(gradleApi())
     "enterpriseCompatibilityCompileOnly"(libs.gradle.enterprise.plugin)
-    "enterpriseCompatibilityImplementation"(sourceSet("compatibilityApi"))
+    "enterpriseCompatibilityImplementation"(sourceSetOutput("compatibilityApi"))
 
     "develocityCompatibilityCompileOnly"(gradleApi())
     "develocityCompatibilityCompileOnly"(libs.develocity.plugin)
-    "develocityCompatibilityImplementation"(sourceSet("compatibilityApi"))
+    "develocityCompatibilityImplementation"(sourceSetOutput("compatibilityApi"))
 }
-
-java {
-    toolchain {
-        languageVersion.set(JavaLanguageVersion.of(8))
-    }
-}
-
-tasks.jar {
-    from(sourceSet("compatibilityApi"))
-    from(sourceSet("enterpriseCompatibility"))
-    from(sourceSet("develocityCompatibility"))
-}
-
