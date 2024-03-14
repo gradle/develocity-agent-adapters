@@ -1,8 +1,11 @@
-import develocity.adapters.sourceSetOutput
 import develocity.adapters.AdaptersPublicationExtension
+import develocity.adapters.sourceSetOutput
+import org.gradle.accessors.dm.LibrariesForLibs
 
 plugins {
     java
+    `java-test-fixtures`
+    `jvm-test-suite`
     `maven-publish`
     signing
 }
@@ -35,6 +38,46 @@ tasks.jar {
     from(sourceSetOutput("compatibilityApi"))
     from(sourceSetOutput("enterpriseCompatibility"))
     from(sourceSetOutput("develocityCompatibility"))
+}
+
+val libs = the<LibrariesForLibs>()
+dependencies {
+    testFixturesImplementation(libs.mockito.core)
+}
+
+testing {
+    suites {
+        val enterpriseCompatibilityTest by creating(JvmTestSuite::class) {
+            useJUnitJupiter()
+
+            dependencies {
+                implementation(sourceSetOutput("enterpriseCompatibility"))
+                implementation(testFixtures(project()))
+                implementation(platform(libs.junit.bom))
+                implementation("org.junit.jupiter:junit-jupiter")
+                implementation(libs.mockito.core)
+                implementation(libs.mockito.jupiter)
+            }
+        }
+
+        val develocityCompatibilityTest by creating(JvmTestSuite::class) {
+            useJUnitJupiter()
+
+            dependencies {
+                implementation(sourceSetOutput("develocityCompatibility"))
+                implementation(testFixtures(project()))
+                implementation(platform(libs.junit.bom))
+                implementation("org.junit.jupiter:junit-jupiter")
+                implementation(libs.mockito.core)
+                implementation(libs.mockito.jupiter)
+            }
+        }
+    }
+}
+
+tasks.named("check") {
+    dependsOn(testing.suites["enterpriseCompatibilityTest"])
+    dependsOn(testing.suites["develocityCompatibilityTest"])
 }
 
 publishing {
