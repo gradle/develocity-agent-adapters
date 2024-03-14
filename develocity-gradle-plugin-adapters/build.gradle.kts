@@ -4,6 +4,8 @@ plugins {
     id("develocity.adapters-library")
 }
 
+version = "1.0"
+
 repositories {
     gradlePluginPortal()
     maven {
@@ -24,4 +26,9 @@ dependencies {
     "develocityCompatibilityCompileOnly"(gradleApi())
     "develocityCompatibilityCompileOnly"(libs.develocity.plugin)
     "develocityCompatibilityImplementation"(sourceSetOutput("compatibilityApi"))
+}
+
+develocityAdaptersPublication {
+    name = "Develocity Gradle API adapters for Develocity and Gradle Enterprise Gradle plugins"
+    description = "Adapter interfaces for interacting with the Develocity and Gradle Enterprise Gradle plugins"
 }
