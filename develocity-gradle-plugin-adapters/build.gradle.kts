@@ -28,6 +28,8 @@ dependencies {
     "develocityCompatibilityCompileOnly"(gradleApi())
     "develocityCompatibilityCompileOnly"(libs.develocity.plugin)
     "develocityCompatibilityImplementation"(sourceSetOutput("compatibilityApi"))
+    "develocityCompatibilityTestImplementation"(gradleApi())
+    "develocityCompatibilityTestImplementation"(libs.develocity.plugin)
 
     testFixturesImplementation(gradleApi())
 }
