@@ -3,6 +3,6 @@ plugins {
     id("com.gradle.enterprise.gradle-enterprise-conventions-plugin") version "0.7.5"
 }
 
-rootProject.name = "develocity-api-adapters"
+rootProject.name = "develocity-agent-adapters"
 include("develocity-gradle-plugin-adapters")
 include("develocity-maven-extension-adapters")
