@@ -19,22 +19,25 @@
 
 package com.gradle.develocity.agent.gradle.adapters.develocity;
 
+import com.gradle.develocity.agent.gradle.DevelocityConfiguration;
 import com.gradle.develocity.agent.gradle.adapters.BuildScanAdapter;
 import com.gradle.develocity.agent.gradle.adapters.DevelocityAdapter;
-import com.gradle.develocity.agent.gradle.DevelocityConfiguration;
+import com.gradle.develocity.agent.gradle.adapters.internal.ProxyFactory;
 import org.gradle.api.Action;
 import org.gradle.caching.configuration.AbstractBuildCache;
 import org.jetbrains.annotations.Nullable;
+
+import static com.gradle.develocity.agent.gradle.adapters.internal.AdapterTypeUtils.checkIsDevelocityConfiguration;
 
 public class DevelocityConfigurationAdapter implements DevelocityAdapter {
 
     private final DevelocityConfiguration configuration;
     private final BuildScanConfigurationAdapter buildScan;
 
-    public DevelocityConfigurationAdapter(DevelocityConfiguration configuration) {
-        this.configuration = configuration;
-        configuration.getBuildScan().publishing(p -> p.onlyIf(ctx -> Boolean.getBoolean("publish")));
-        this.buildScan = new BuildScanConfigurationAdapter(configuration.getBuildScan());
+    public DevelocityConfigurationAdapter(Object configuration) {
+        checkIsDevelocityConfiguration(configuration);
+        this.configuration = ProxyFactory.createProxy(configuration, DevelocityConfiguration.class);
+        this.buildScan = new BuildScanConfigurationAdapter(this.configuration.getBuildScan());
     }
 
     @Override

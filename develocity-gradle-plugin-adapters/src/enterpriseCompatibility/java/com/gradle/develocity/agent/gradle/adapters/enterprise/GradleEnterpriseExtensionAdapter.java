@@ -21,19 +21,23 @@ package com.gradle.develocity.agent.gradle.adapters.enterprise;
 
 import com.gradle.develocity.agent.gradle.adapters.BuildScanAdapter;
 import com.gradle.develocity.agent.gradle.adapters.DevelocityAdapter;
+import com.gradle.develocity.agent.gradle.adapters.internal.ProxyFactory;
 import com.gradle.enterprise.gradleplugin.GradleEnterpriseExtension;
 import org.gradle.api.Action;
 import org.gradle.caching.configuration.AbstractBuildCache;
 import org.jetbrains.annotations.Nullable;
+
+import static com.gradle.develocity.agent.gradle.adapters.internal.AdapterTypeUtils.checkIsGradleEnterpriseExtension;
 
 public class GradleEnterpriseExtensionAdapter implements DevelocityAdapter {
 
     private final GradleEnterpriseExtension extension;
     private final BuildScanExtensionAdapter buildScan;
 
-    public GradleEnterpriseExtensionAdapter(GradleEnterpriseExtension extension) {
-        this.extension = extension;
-        this.buildScan = new BuildScanExtensionAdapter(extension.getBuildScan());
+    public GradleEnterpriseExtensionAdapter(Object extension) {
+        checkIsGradleEnterpriseExtension(extension);
+        this.extension = ProxyFactory.createProxy(extension, GradleEnterpriseExtension.class);
+        this.buildScan = new BuildScanExtensionAdapter(this.extension.getBuildScan());
     }
 
     @Override
