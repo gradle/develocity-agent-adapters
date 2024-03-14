@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project version="4">
-  <component name="ProjectModuleManager">
-    <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/gradle-plugin-adapters/develocity-api-adapters.gradle-plugin-adapters.develocityCompatibility.iml" filepath="$PROJECT_DIR$/.idea/modules/gradle-plugin-adapters/develocity-api-adapters.gradle-plugin-adapters.develocityCompatibility.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/gradle-plugin-adapters/develocity-api-adapters.gradle-plugin-adapters.enterpriseCompatibility.iml" filepath="$PROJECT_DIR$/.idea/modules/gradle-plugin-adapters/develocity-api-adapters.gradle-plugin-adapters.enterpriseCompatibility.iml" />
-    </modules>
-  </component>
-</project>
