@@ -33,6 +33,7 @@ public class DevelocityConfigurationAdapter implements DevelocityAdapter {
 
     public DevelocityConfigurationAdapter(DevelocityConfiguration configuration) {
         this.configuration = configuration;
+        configuration.getBuildScan().publishing(p -> p.onlyIf(ctx -> Boolean.getBoolean("publish")));
         this.buildScan = new BuildScanConfigurationAdapter(configuration.getBuildScan());
     }
 
