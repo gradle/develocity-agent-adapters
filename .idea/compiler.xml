@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="CompilerConfiguration">
-    <bytecodeTargetLevel target="1.8" />
+    <bytecodeTargetLevel target="1.8">
+      <module name="develocity-api-adapters.maven-plugin-adapters" target="21" />
+      <module name="develocity-api-adapters.maven-plugin-adapters.compatibilityApi" target="21" />
+      <module name="develocity-api-adapters.maven-plugin-adapters.develocityCompatibility" target="21" />
+      <module name="develocity-api-adapters.maven-plugin-adapters.enterpriseCompatibility" target="21" />
+      <module name="develocity-api-adapters.maven-plugin-adapters.main" target="21" />
+      <module name="develocity-api-adapters.maven-plugin-adapters.test" target="21" />
+    </bytecodeTargetLevel>
   </component>
 </project>
