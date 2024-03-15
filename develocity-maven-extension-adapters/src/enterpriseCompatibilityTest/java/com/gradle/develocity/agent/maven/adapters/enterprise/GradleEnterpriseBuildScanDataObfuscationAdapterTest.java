@@ -19,6 +19,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static com.gradle.develocity.agent.maven.adapters.enterprise.MockFactory.createBuildScanApi;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
@@ -34,9 +35,8 @@ class GradleEnterpriseBuildScanDataObfuscationAdapterTest {
     @BeforeEach
     void setup() {
         obfuscation = mock();
-        BuildScanApi buildScanApi = mock();
+        BuildScanApi buildScanApi = createBuildScanApi();
         when(buildScanApi.getObfuscation()).thenReturn(obfuscation);
-        when(buildScanApi.getCapture()).thenReturn(mock());
         adapter = new GradleEnterpriseBuildScanApiAdapter(buildScanApi).getObfuscation();
     }
 

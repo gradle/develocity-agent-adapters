@@ -18,6 +18,7 @@ import java.net.URI;
 import java.util.Collections;
 
 import static com.gradle.develocity.agent.maven.adapters.ActionMockFixtures.doExecuteActionWith;
+import static com.gradle.develocity.agent.maven.adapters.enterprise.MockFactory.createBuildScanApi;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -33,9 +34,7 @@ public class GradleEnterpriseBuildScanApiAdapterTest {
 
     @BeforeEach
     void setup() {
-        api = mock();
-        when(api.getObfuscation()).thenReturn(mock());
-        when(api.getCapture()).thenReturn(mock());
+        api = createBuildScanApi();
         adapter = new GradleEnterpriseBuildScanApiAdapter(api);
     }
 

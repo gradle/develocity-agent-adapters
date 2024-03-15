@@ -1,12 +1,7 @@
 package com.gradle.develocity.agent.maven.adapters.develocity;
 
-import com.gradle.develocity.agent.maven.adapters.develocity.DevelocityApiAdapter;
-import com.gradle.develocity.agent.maven.adapters.enterprise.GradleEnterpriseApiAdapter;
 import com.gradle.develocity.agent.maven.api.DevelocityApi;
 import com.gradle.develocity.agent.maven.api.cache.BuildCacheApi;
-import com.gradle.develocity.agent.maven.api.cache.LocalBuildCache;
-import com.gradle.develocity.agent.maven.api.cache.RemoteBuildCache;
-import com.gradle.develocity.agent.maven.api.cache.Server;
 import com.gradle.develocity.agent.maven.api.scan.BuildScanApi;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -18,6 +13,8 @@ import java.net.URI;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import static com.gradle.develocity.agent.maven.adapters.develocity.MockFactory.createBuildCacheApi;
+import static com.gradle.develocity.agent.maven.adapters.develocity.MockFactory.createBuildScanApi;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
@@ -32,22 +29,12 @@ class DevelocityApiAdapterTest {
 
     @BeforeEach
     void setup() {
-        BuildScanApi buildScanApi = mock();
-        when(buildScanApi.getObfuscation()).thenReturn(mock());
-        when(buildScanApi.getCapture()).thenReturn(mock());
-
-        LocalBuildCache local = mock();
-        when(local.getCleanupPolicy()).thenReturn(mock());
-        RemoteBuildCache remote = mock();
-        Server server = mock();
-        when(server.getCredentials()).thenReturn(mock());
-        when(remote.getServer()).thenReturn(server);
-        BuildCacheApi buildCacheApi = mock();
-        when(buildCacheApi.getLocal()).thenReturn(local);
-        when(buildCacheApi.getRemote()).thenReturn(remote);
-
         api = mock();
+
+        BuildScanApi buildScanApi = createBuildScanApi();
         when(api.getBuildScan()).thenReturn(buildScanApi);
+
+        BuildCacheApi buildCacheApi = createBuildCacheApi();
         when(api.getBuildCache()).thenReturn(buildCacheApi);
 
         adapter = new DevelocityApiAdapter(api);

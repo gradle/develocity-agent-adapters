@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.function.Predicate;
 
 import static com.gradle.develocity.agent.maven.adapters.ActionMockFixtures.doExecuteActionWith;
+import static com.gradle.develocity.agent.maven.adapters.develocity.MockFactory.createBuildScanApi;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -39,9 +40,7 @@ public class DevelocityBuildScanApiAdapterTest {
 
     @BeforeEach
     void setup() {
-        api = mock();
-        when(api.getObfuscation()).thenReturn(mock());
-        when(api.getCapture()).thenReturn(mock());
+        api = createBuildScanApi();
         adapter = new DevelocityBuildScanApiAdapter(api);
     }
 

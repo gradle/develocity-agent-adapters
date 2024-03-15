@@ -3,10 +3,7 @@ package com.gradle.develocity.agent.maven.adapters.enterprise;
 import com.gradle.develocity.agent.maven.adapters.BuildCacheApiAdapter;
 import com.gradle.develocity.agent.maven.adapters.MojoMetadataProviderAdapter;
 import com.gradle.maven.extension.api.cache.BuildCacheApi;
-import com.gradle.maven.extension.api.cache.LocalBuildCache;
 import com.gradle.maven.extension.api.cache.MojoMetadataProvider;
-import com.gradle.maven.extension.api.cache.RemoteBuildCache;
-import com.gradle.maven.extension.api.cache.Server;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,32 +14,25 @@ import org.mockito.stubbing.Stubber;
 import java.util.Arrays;
 
 import static com.gradle.develocity.agent.maven.adapters.ActionMockFixtures.doExecuteActionWith;
+import static com.gradle.develocity.agent.maven.adapters.enterprise.MockFactory.createBuildCacheApi;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class GradleEnterpriseBuildCacheMojoMetadataProviderAdapterTest {
 
-    private BuildCacheApi api;
+    private MojoMetadataProvider.Context ctx;
     private BuildCacheApiAdapter adapter;
 
     @BeforeEach
     void setup() {
-        LocalBuildCache localCache = mock();
-        when(localCache.getCleanupPolicy()).thenReturn(mock());
+        BuildCacheApi api = createBuildCacheApi();
 
-        Server remoteServer = mock();
-        when(remoteServer.getCredentials()).thenReturn(mock());
-        RemoteBuildCache remoteCache = mock();
-        when(remoteCache.getServer()).thenReturn(remoteServer);
-
-        api = mock();
-        when(api.getLocal()).thenReturn(localCache);
-        when(api.getRemote()).thenReturn(remoteCache);
+        ctx = mock();
+        doExecuteProviderWith(ctx).when(api).registerMojoMetadataProvider(any());
 
         adapter = new GradleEnterpriseBuildCacheApiAdapter(api);
     }
@@ -50,10 +40,6 @@ public class GradleEnterpriseBuildCacheMojoMetadataProviderAdapterTest {
     @Test
     @DisplayName("can access underlying context object using metadata provider")
     void testContextUnderlyingObject() {
-        // given
-        MojoMetadataProvider.Context ctx = mock();
-        doExecuteProviderWith(ctx).when(api).registerMojoMetadataProvider(any());
-
         // when
         adapter.registerMojoMetadataProvider(MojoMetadataProviderAdapter.Context::getUnderlyingObject);
 
@@ -64,10 +50,6 @@ public class GradleEnterpriseBuildCacheMojoMetadataProviderAdapterTest {
     @Test
     @DisplayName("can access mojo execution using metadata provider")
     void testContextMojoExecution() {
-        // given
-        MojoMetadataProvider.Context ctx = mock();
-        doExecuteProviderWith(ctx).when(api).registerMojoMetadataProvider(any());
-
         // when
         adapter.registerMojoMetadataProvider(MojoMetadataProviderAdapter.Context::getMojoExecution);
 
@@ -78,10 +60,6 @@ public class GradleEnterpriseBuildCacheMojoMetadataProviderAdapterTest {
     @Test
     @DisplayName("can access Maven project using metadata provider")
     void testContextProject() {
-        // given
-        MojoMetadataProvider.Context ctx = mock();
-        doExecuteProviderWith(ctx).when(api).registerMojoMetadataProvider(any());
-
         // when
         adapter.registerMojoMetadataProvider(MojoMetadataProviderAdapter.Context::getProject);
 
@@ -92,10 +70,6 @@ public class GradleEnterpriseBuildCacheMojoMetadataProviderAdapterTest {
     @Test
     @DisplayName("can access Maven session using metadata provider")
     void testContextSession() {
-        // given
-        MojoMetadataProvider.Context ctx = mock();
-        doExecuteProviderWith(ctx).when(api).registerMojoMetadataProvider(any());
-
         // when
         adapter.registerMojoMetadataProvider(MojoMetadataProviderAdapter.Context::getSession);
 
@@ -106,10 +80,6 @@ public class GradleEnterpriseBuildCacheMojoMetadataProviderAdapterTest {
     @Test
     @DisplayName("can register withPlugin callbacks using metadata provider")
     void testContextWithPlugin() {
-        // given
-        MojoMetadataProvider.Context ctx = mock();
-        doExecuteProviderWith(ctx).when(api).registerMojoMetadataProvider(any());
-
         // when
         adapter.registerMojoMetadataProvider(c -> c.withPlugin("pluginId", () -> {
         }));
@@ -121,10 +91,6 @@ public class GradleEnterpriseBuildCacheMojoMetadataProviderAdapterTest {
     @Test
     @DisplayName("can register skip properties using metadata provider")
     void testContextSkipIfTrue() {
-        // given
-        MojoMetadataProvider.Context ctx = mock();
-        doExecuteProviderWith(ctx).when(api).registerMojoMetadataProvider(any());
-
         // when
         adapter.registerMojoMetadataProvider(c -> c.skipIfTrue("prop1", "prop2"));
 
@@ -136,10 +102,6 @@ public class GradleEnterpriseBuildCacheMojoMetadataProviderAdapterTest {
     @DisplayName("can configure inputs using metadata provider")
     void testContextInputs() {
         // given
-        MojoMetadataProvider.Context ctx = mock();
-        doExecuteProviderWith(ctx).when(api).registerMojoMetadataProvider(any());
-
-        // and
         MojoMetadataProvider.Context.Inputs inputs = mock();
         doExecuteActionWith(inputs).when(ctx).inputs(any());
 
@@ -166,10 +128,6 @@ public class GradleEnterpriseBuildCacheMojoMetadataProviderAdapterTest {
     @DisplayName("can configure outputs using metadata provider")
     void testContextOutputs() {
         // given
-        MojoMetadataProvider.Context ctx = mock();
-        doExecuteProviderWith(ctx).when(api).registerMojoMetadataProvider(any());
-
-        // and
         MojoMetadataProvider.Context.Outputs outputs = mock();
         doExecuteActionWith(outputs).when(ctx).outputs(any());
 
@@ -198,10 +156,6 @@ public class GradleEnterpriseBuildCacheMojoMetadataProviderAdapterTest {
     @DisplayName("can configure local state using metadata provider")
     void testContextLocalState() {
         // given
-        MojoMetadataProvider.Context ctx = mock();
-        doExecuteProviderWith(ctx).when(api).registerMojoMetadataProvider(any());
-
-        // and
         MojoMetadataProvider.Context.LocalState localState = mock();
         doExecuteActionWith(localState).when(ctx).localState(any());
 
@@ -219,10 +173,6 @@ public class GradleEnterpriseBuildCacheMojoMetadataProviderAdapterTest {
     @Test
     @DisplayName("can configure nested context using metadata provider")
     void testContextNested() {
-        // given
-        MojoMetadataProvider.Context ctx = mock();
-        doExecuteProviderWith(ctx).when(api).registerMojoMetadataProvider(any());
-
         // when
         adapter.registerMojoMetadataProvider(c -> c.nested("nested", MojoMetadataProviderAdapter.Context::getUnderlyingObject));
 
@@ -233,10 +183,6 @@ public class GradleEnterpriseBuildCacheMojoMetadataProviderAdapterTest {
     @Test
     @DisplayName("can iterate over context using metadata provider")
     void testContextIterate() {
-        // given
-        MojoMetadataProvider.Context ctx = mock();
-        doExecuteProviderWith(ctx).when(api).registerMojoMetadataProvider(any());
-
         // when
         adapter.registerMojoMetadataProvider(c -> c.iterate("iterate", MojoMetadataProviderAdapter.Context::getUnderlyingObject));
 
@@ -248,10 +194,6 @@ public class GradleEnterpriseBuildCacheMojoMetadataProviderAdapterTest {
     @DisplayName("can configure input file sets using metadata provider")
     void testContextFileSet() {
         // given
-        MojoMetadataProvider.Context ctx = mock();
-        doExecuteProviderWith(ctx).when(api).registerMojoMetadataProvider(any());
-
-        // and
         MojoMetadataProvider.Context.Inputs inputs = mock();
         doExecuteActionWith(inputs).when(ctx).inputs(any());
 
@@ -280,7 +222,7 @@ public class GradleEnterpriseBuildCacheMojoMetadataProviderAdapterTest {
         verify(fileSet).lineEndingHandling(MojoMetadataProvider.Context.FileSet.LineEndingHandling.NORMALIZE);
     }
 
-    private static <T> Stubber doExecuteProviderWith(MojoMetadataProvider.Context ctx) {
+    private static Stubber doExecuteProviderWith(MojoMetadataProvider.Context ctx) {
         return doAnswer(invocation -> {
             MojoMetadataProvider action = invocation.getArgument(0);
             action.provideMetadata(ctx);

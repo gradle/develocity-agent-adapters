@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import static com.gradle.develocity.agent.maven.adapters.enterprise.MockFactory.createBuildScanApi;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -23,8 +24,7 @@ class GradleEnterpriseBuildScanCaptureSettingsAdapterTest {
     @BeforeEach
     void setup() {
         capture = mock();
-        BuildScanApi buildScanApi = mock();
-        when(buildScanApi.getObfuscation()).thenReturn(mock());
+        BuildScanApi buildScanApi = createBuildScanApi();
         when(buildScanApi.getCapture()).thenReturn(capture);
         adapter = new GradleEnterpriseBuildScanApiAdapter(buildScanApi).getCapture();
     }

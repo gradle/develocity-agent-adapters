@@ -3,10 +3,7 @@ package com.gradle.develocity.agent.maven.adapters.develocity;
 import com.gradle.develocity.agent.maven.adapters.BuildCacheApiAdapter;
 import com.gradle.develocity.agent.maven.adapters.NormalizationProviderAdapter;
 import com.gradle.develocity.agent.maven.api.cache.BuildCacheApi;
-import com.gradle.develocity.agent.maven.api.cache.LocalBuildCache;
 import com.gradle.develocity.agent.maven.api.cache.NormalizationProvider;
-import com.gradle.develocity.agent.maven.api.cache.RemoteBuildCache;
-import com.gradle.develocity.agent.maven.api.cache.Server;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,31 +14,24 @@ import org.mockito.stubbing.Stubber;
 import java.util.Arrays;
 
 import static com.gradle.develocity.agent.maven.adapters.ActionMockFixtures.doExecuteActionWith;
+import static com.gradle.develocity.agent.maven.adapters.develocity.MockFactory.createBuildCacheApi;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class DevelocityBuildCacheNormalizationProviderAdapterTest {
 
-    private BuildCacheApi api;
+    private NormalizationProvider.Context ctx;
     private BuildCacheApiAdapter adapter;
 
     @BeforeEach
     void setup() {
-        LocalBuildCache localCache = mock();
-        when(localCache.getCleanupPolicy()).thenReturn(mock());
+        BuildCacheApi api = createBuildCacheApi();
 
-        Server remoteServer = mock();
-        when(remoteServer.getCredentials()).thenReturn(mock());
-        RemoteBuildCache remoteCache = mock();
-        when(remoteCache.getServer()).thenReturn(remoteServer);
-
-        api = mock();
-        when(api.getLocal()).thenReturn(localCache);
-        when(api.getRemote()).thenReturn(remoteCache);
+        ctx = mock();
+        doExecuteProviderWith(ctx).when(api).registerNormalizationProvider(any());
 
         adapter = new DevelocityBuildCacheApiAdapter(api);
     }
@@ -49,10 +39,6 @@ public class DevelocityBuildCacheNormalizationProviderAdapterTest {
     @Test
     @DisplayName("can access Maven project using normalization provider")
     void testContextProject() {
-        // given
-        NormalizationProvider.Context ctx = mock();
-        doExecuteProviderWith(ctx).when(api).registerNormalizationProvider(any());
-
         // when
         adapter.registerNormalizationProvider(NormalizationProviderAdapter.Context::getProject);
 
@@ -63,10 +49,6 @@ public class DevelocityBuildCacheNormalizationProviderAdapterTest {
     @Test
     @DisplayName("can access Maven session using normalization provider")
     void testContextSession() {
-        // given
-        NormalizationProvider.Context ctx = mock();
-        doExecuteProviderWith(ctx).when(api).registerNormalizationProvider(any());
-
         // when
         adapter.registerNormalizationProvider(NormalizationProviderAdapter.Context::getSession);
 
@@ -78,10 +60,6 @@ public class DevelocityBuildCacheNormalizationProviderAdapterTest {
     @DisplayName("can configure sys props normalization using provider")
     void testContextSysPropsNormalization() {
         // given
-        NormalizationProvider.Context ctx = mock();
-        doExecuteProviderWith(ctx).when(api).registerNormalizationProvider(any());
-
-        // and
         NormalizationProvider.SystemPropertiesNormalization sysProps = mock();
         doExecuteActionWith(sysProps).when(ctx).configureSystemPropertiesNormalization(any());
 
@@ -100,10 +78,6 @@ public class DevelocityBuildCacheNormalizationProviderAdapterTest {
     @DisplayName("can configure runtime normalization using provider")
     void testContextRuntimeNormalization() {
         // given
-        NormalizationProvider.Context ctx = mock();
-        doExecuteProviderWith(ctx).when(api).registerNormalizationProvider(any());
-
-        // and
         NormalizationProvider.RuntimeClasspathNormalization runtime = mock();
         doExecuteActionWith(runtime).when(ctx).configureRuntimeClasspathNormalization(any());
 
@@ -127,10 +101,6 @@ public class DevelocityBuildCacheNormalizationProviderAdapterTest {
     @DisplayName("can configure runtime normalization meta information using provider")
     void testContextRuntimeNormalizationMetaInf() {
         // given
-        NormalizationProvider.Context ctx = mock();
-        doExecuteProviderWith(ctx).when(api).registerNormalizationProvider(any());
-
-        // and
         NormalizationProvider.RuntimeClasspathNormalization runtime = mock();
         doExecuteActionWith(runtime).when(ctx).configureRuntimeClasspathNormalization(any());
 
@@ -157,7 +127,7 @@ public class DevelocityBuildCacheNormalizationProviderAdapterTest {
         verify(metaInf).setIgnoreCompletely(false);
     }
 
-    private static <T> Stubber doExecuteProviderWith(NormalizationProvider.Context ctx) {
+    private static Stubber doExecuteProviderWith(NormalizationProvider.Context ctx) {
         return doAnswer(invocation -> {
             NormalizationProvider action = invocation.getArgument(0);
             action.configureNormalization(ctx);

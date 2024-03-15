@@ -19,10 +19,10 @@ import java.io.File;
 import java.net.URI;
 import java.time.Duration;
 
+import static com.gradle.develocity.agent.maven.adapters.develocity.MockFactory.createBuildCacheApi;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -42,18 +42,13 @@ public class DevelocityBuildCacheApiAdapterTest {
 
     @BeforeEach
     void setup() {
-        cleanupPolicy = mock();
-        localCache = mock();
-        when(localCache.getCleanupPolicy()).thenReturn(cleanupPolicy);
-        cacheApi = mock();
-        when(cacheApi.getLocal()).thenReturn(localCache);
+        cacheApi = createBuildCacheApi();
+        localCache = cacheApi.getLocal();
+        cleanupPolicy = localCache.getCleanupPolicy();
 
-        remoteCache = mock();
-        remoteServer = mock();
-        remoteCredentials = mock();
-        when(remoteServer.getCredentials()).thenReturn(remoteCredentials);
-        when(remoteCache.getServer()).thenReturn(remoteServer);
-        when(cacheApi.getRemote()).thenReturn(remoteCache);
+        remoteCache = cacheApi.getRemote();
+        remoteServer = remoteCache.getServer();
+        remoteCredentials = remoteServer.getCredentials();
 
         cacheAdapter = new DevelocityBuildCacheApiAdapter(cacheApi);
         localCacheAdapter = cacheAdapter.getLocal();

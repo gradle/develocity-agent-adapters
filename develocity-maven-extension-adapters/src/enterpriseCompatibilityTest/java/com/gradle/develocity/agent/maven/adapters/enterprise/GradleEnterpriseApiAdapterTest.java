@@ -2,12 +2,7 @@ package com.gradle.develocity.agent.maven.adapters.enterprise;
 
 import com.gradle.maven.extension.api.GradleEnterpriseApi;
 import com.gradle.maven.extension.api.cache.BuildCacheApi;
-import com.gradle.maven.extension.api.cache.LocalBuildCache;
-import com.gradle.maven.extension.api.cache.RemoteBuildCache;
-import com.gradle.maven.extension.api.cache.Server;
 import com.gradle.maven.extension.api.scan.BuildScanApi;
-import com.gradle.maven.extension.api.scan.BuildScanCaptureSettings;
-import com.gradle.maven.extension.api.scan.BuildScanDataObfuscation;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,6 +13,8 @@ import java.net.URI;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import static com.gradle.develocity.agent.maven.adapters.enterprise.MockFactory.createBuildCacheApi;
+import static com.gradle.develocity.agent.maven.adapters.enterprise.MockFactory.createBuildScanApi;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
@@ -32,22 +29,12 @@ class GradleEnterpriseApiAdapterTest {
 
     @BeforeEach
     void setup() {
-        BuildScanApi buildScanApi = mock();
-        when(buildScanApi.getObfuscation()).thenReturn(mock());
-        when(buildScanApi.getCapture()).thenReturn(mock());
-
-        LocalBuildCache local = mock();
-        when(local.getCleanupPolicy()).thenReturn(mock());
-        RemoteBuildCache remote = mock();
-        Server server = mock();
-        when(server.getCredentials()).thenReturn(mock());
-        when(remote.getServer()).thenReturn(server);
-        BuildCacheApi buildCacheApi = mock();
-        when(buildCacheApi.getLocal()).thenReturn(local);
-        when(buildCacheApi.getRemote()).thenReturn(remote);
-
         api = mock();
+
+        BuildScanApi buildScanApi = createBuildScanApi();
         when(api.getBuildScan()).thenReturn(buildScanApi);
+
+        BuildCacheApi buildCacheApi = createBuildCacheApi();
         when(api.getBuildCache()).thenReturn(buildCacheApi);
 
         adapter = new GradleEnterpriseApiAdapter(api);
