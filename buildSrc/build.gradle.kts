@@ -5,3 +5,7 @@ plugins {
 repositories {
     gradlePluginPortal()
 }
+
+dependencies {
+    implementation(files(libs.javaClass.superclass.protectionDomain.codeSource.location))
+}

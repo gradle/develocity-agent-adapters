@@ -22,10 +22,16 @@ dependencies {
     "enterpriseCompatibilityCompileOnly"(gradleApi())
     "enterpriseCompatibilityCompileOnly"(libs.gradle.enterprise.plugin)
     "enterpriseCompatibilityImplementation"(sourceSetOutput("compatibilityApi"))
+    "enterpriseCompatibilityTestImplementation"(gradleApi())
+    "enterpriseCompatibilityTestImplementation"(libs.gradle.enterprise.plugin)
 
     "develocityCompatibilityCompileOnly"(gradleApi())
     "develocityCompatibilityCompileOnly"(libs.develocity.plugin)
     "develocityCompatibilityImplementation"(sourceSetOutput("compatibilityApi"))
+    "develocityCompatibilityTestImplementation"(gradleApi())
+    "develocityCompatibilityTestImplementation"(libs.develocity.plugin)
+
+    testFixturesImplementation(gradleApi())
 }
 
 develocityAdaptersPublication {

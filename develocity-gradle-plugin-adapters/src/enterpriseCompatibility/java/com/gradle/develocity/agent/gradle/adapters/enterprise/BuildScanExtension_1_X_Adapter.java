@@ -25,6 +25,7 @@ import com.gradle.develocity.agent.gradle.adapters.BuildScanCaptureAdapter;
 import com.gradle.develocity.agent.gradle.adapters.BuildScanObfuscationAdapter;
 import com.gradle.develocity.agent.gradle.adapters.DevelocityAdapter;
 import com.gradle.develocity.agent.gradle.adapters.PublishedBuildScanAdapter;
+import com.gradle.develocity.agent.gradle.adapters.internal.ProxyFactory;
 import com.gradle.scan.plugin.BuildScanExtension;
 import org.gradle.api.Action;
 import org.gradle.caching.configuration.AbstractBuildCache;
@@ -36,6 +37,8 @@ import java.net.URI;
 import java.util.Collections;
 import java.util.List;
 
+import static com.gradle.develocity.agent.gradle.adapters.internal.AdapterTypeUtils.checkIsBuildScanExtension;
+
 /**
  * Build Scan plugin 1.x registers the build scan extension as the root extension.
  * This adapter abstracts this detail away and allows interacting with the extension both as the root "develocity" extension and as the "buildScan" extension
@@ -46,8 +49,9 @@ public class BuildScanExtension_1_X_Adapter implements DevelocityAdapter, BuildS
 
     private final BuildScanExtension extension;
 
-    public BuildScanExtension_1_X_Adapter(BuildScanExtension extension) {
-        this.extension = extension;
+    public BuildScanExtension_1_X_Adapter(Object extension) {
+        checkIsBuildScanExtension(extension);
+        this.extension = ProxyFactory.createProxy(extension, BuildScanExtension.class);
     }
 
     @Override

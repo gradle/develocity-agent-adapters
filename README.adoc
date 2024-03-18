@@ -50,9 +50,9 @@ private static void publishConditionally(DevelocityAdapter develocity) {
     develocity.getBuildScan().publishAlwaysIf(Boolean.getBoolean("publish"));
 }
 
-DevelocityConfiguration develocity = settings.getExtensions().getByType(DevelocityConfiguration.class);
+Object develocity = settings.getExtensions().getByName("develocity");
 publishConditionally(new DevelocityConfigurationAdapter(develocity));
 
-GradleEnterpriseExtension gradleEnterprise = settings.getExtensions().getByType(GradleEnterpriseExtension.class);
+Object gradleEnterprise = settings.getExtensions().getByName("gradleEnterprise");
 publishConditionally(new GradleEnterpriseExtensionAdapter(gradleEnterprise));
 ----
