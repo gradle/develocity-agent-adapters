@@ -10,11 +10,6 @@ plugins {
     id("com.gradle.enterprise.gradle-enterprise-conventions-plugin")
 }
 
-dependencyResolutionManagement {
-    repositories {
-        mavenCentral()
-    }
-}
-
 rootProject.name = "develocity-agent-adapters"
 include("develocity-gradle-plugin-adapters")
+include("develocity-maven-extension-adapters")
