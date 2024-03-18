@@ -21,10 +21,16 @@ dependencies {
     "enterpriseCompatibilityCompileOnly"(libs.maven.core)
     "enterpriseCompatibilityCompileOnly"(libs.gradle.enterprise.extension)
     "enterpriseCompatibilityImplementation"(sourceSetOutput("compatibilityApi"))
+    "enterpriseCompatibilityTestImplementation"(libs.maven.core)
+    "enterpriseCompatibilityTestImplementation"(libs.gradle.enterprise.extension)
+    "enterpriseCompatibilityTestRuntimeOnly"(libs.log4j)
 
     "develocityCompatibilityCompileOnly"(libs.maven.core)
     "develocityCompatibilityCompileOnly"(libs.develocity.extension)
     "develocityCompatibilityImplementation"(sourceSetOutput("compatibilityApi"))
+    "develocityCompatibilityTestImplementation"(libs.maven.core)
+    "develocityCompatibilityTestImplementation"(libs.develocity.extension)
+    "develocityCompatibilityTestRuntimeOnly"(libs.log4j)
 }
 
 develocityAdaptersPublication {
