@@ -1,5 +1,5 @@
 [versions]
-mockito = "4.11.0"
+mockito = "5.11.0"
 jupiter = "5.10.2"
 
 [plugins]
