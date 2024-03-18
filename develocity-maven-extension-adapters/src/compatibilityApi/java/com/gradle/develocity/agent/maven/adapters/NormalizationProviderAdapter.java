@@ -1,3 +1,22 @@
+/*
+ *
+ *  * Copyright 2024-2024 the original author or authors.
+ *  *
+ *  * Licensed under the Apache License, Version 2.0 (the "License");
+ *  * you may not use this file except in compliance with the License.
+ *  * You may obtain a copy of the License at
+ *  *
+ *  *      http://www.apache.org/licenses/LICENSE-2.0
+ *  *
+ *  * Unless required by applicable law or agreed to in writing, software
+ *  * distributed under the License is distributed on an "AS IS" BASIS,
+ *  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  * See the License for the specific language governing permissions and
+ *  * limitations under the License.
+ *
+ *
+ */
+
 package com.gradle.develocity.agent.maven.adapters;
 
 import org.apache.maven.execution.MavenSession;
@@ -7,10 +26,18 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 
+/**
+ * @see com.gradle.develocity.agent.maven.api.cache.NormalizationProvider
+ * @see com.gradle.maven.extension.api.cache.NormalizationProvider
+ */
 public interface NormalizationProviderAdapter {
 
     void configureNormalization(Context context);
 
+    /**
+     * @see com.gradle.develocity.agent.maven.api.cache.NormalizationProvider.SystemPropertiesNormalization
+     * @see com.gradle.maven.extension.api.cache.NormalizationProvider.SystemPropertiesNormalization
+     */
     interface SystemPropertiesNormalization {
         default SystemPropertiesNormalization setIgnoredKeys(String... systemPropertyNames) {
             return setIgnoredKeys(Arrays.asList(systemPropertyNames));
@@ -25,6 +52,10 @@ public interface NormalizationProviderAdapter {
         SystemPropertiesNormalization addIgnoredKeys(List<String> systemPropertyNames);
     }
 
+    /**
+     * @see com.gradle.develocity.agent.maven.api.cache.NormalizationProvider.RuntimeClasspathNormalization
+     * @see com.gradle.maven.extension.api.cache.NormalizationProvider.RuntimeClasspathNormalization
+     */
     interface RuntimeClasspathNormalization {
         RuntimeClasspathNormalization setIgnoredFiles(List<String> ignoredFiles);
 
@@ -46,6 +77,10 @@ public interface NormalizationProviderAdapter {
 
         RuntimeClasspathNormalization configureMetaInf(Consumer<MetaInf> action);
 
+        /**
+         * @see com.gradle.develocity.agent.maven.api.cache.NormalizationProvider.RuntimeClasspathNormalization.MetaInf
+         * @see com.gradle.maven.extension.api.cache.NormalizationProvider.RuntimeClasspathNormalization.MetaInf
+         */
         interface MetaInf {
             MetaInf setIgnoredAttributes(List<String> ignoredAttributes);
 
@@ -77,6 +112,10 @@ public interface NormalizationProviderAdapter {
         }
     }
 
+    /**
+     * @see com.gradle.develocity.agent.maven.api.cache.NormalizationProvider.Context
+     * @see com.gradle.maven.extension.api.cache.NormalizationProvider.Context
+     */
     interface Context {
         MavenProject getProject();
 
