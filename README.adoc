@@ -2,7 +2,7 @@
 
 Starting with versions 3.17 and 1.21 respectively, the https://gradle.com/[Gradle Enterprise] Gradle plugin and Maven extension are available under the “Develocity” brand.
 Several core functionalities have been deprecated with the rebranding.
-This repository provides an adapter classes for both versions of the API to enable a smooth upgrade to the new API and support developers in providing compatibility with both “Gradle Enterprise” and “Develocity” plugins/extensions.
+This repository provides adapter classes for both versions of the API to enable a smooth upgrade to the new API and support developers in providing compatibility with both “Gradle Enterprise” and “Develocity” plugins/extensions.
 
 == Adapters
 
