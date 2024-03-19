@@ -12,11 +12,13 @@ version = "2022.04"
 project {
     publishDevelocityApiAdapters(
         "develocity-gradle-plugin-adapters",
-        "Develocity Gradle Plugin Adapters"
+        "Develocity Gradle Plugin Adapters",
+        "DevelocityGradlePluginAdapters"
     )
     publishDevelocityApiAdapters(
         "develocity-maven-extension-adapters",
-        "Develocity Maven Extension Adapters"
+        "Develocity Maven Extension Adapters",
+        "DevelocityMavenExtensionAdapters"
     )
     params {
         param("env.GRADLE_ENTERPRISE_ACCESS_KEY", "%ge.gradle.org.access.key%")
@@ -26,14 +28,14 @@ project {
     }
 }
 
-fun Project.publishDevelocityApiAdapters(projectPath: String, projectDisplayName: String) {
+fun Project.publishDevelocityApiAdapters(projectPath: String, projectDisplayName: String, jobId: String) {
     buildType {
         name = "Publish ${projectDisplayName}"
         id = RelativeId(name.toId())
         description = "Publish ${projectDisplayName} to Maven Central staging repository"
 
         vcs {
-            root(AbsoluteId("OpenSourceProjects_DevelocityApiAdapters_GradleDevelocityApiAdapters"))
+            root(AbsoluteId("OpenSourceProjects_DevelocityAgentAdapters_${jobId}"))
             checkoutMode = CheckoutMode.ON_AGENT
             cleanCheckout = true
         }
