@@ -33,7 +33,7 @@ fun Project.publishDevelocityApiAdapters(projectPath: String, projectDisplayName
         description = "Publish ${projectDisplayName} to Maven Central staging repository"
 
         vcs {
-            root(AbsoluteId("OpenSourceProjects_DevelocityAgentAdapters"))
+            root(AbsoluteId("OpenSourceProjects_DevelocityAgentAdapters_GradleDevelocityAgentAdapters"))
             checkoutMode = CheckoutMode.ON_AGENT
             cleanCheckout = true
         }
