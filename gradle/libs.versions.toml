@@ -7,10 +7,10 @@ nexus-publish = { id = "io.github.gradle-nexus.publish-plugin", version = "1.3.0
 
 [libraries]
 gradle-enterprise-plugin = { module = "com.gradle:gradle-enterprise-gradle-plugin", version = "3.16.2" }
-develocity-plugin = { module = "com.gradle:develocity-gradle-plugin", version = "3.17-rc-4" }
+develocity-plugin = { module = "com.gradle:develocity-gradle-plugin", version = "3.17" }
 maven-core = { module = "org.apache.maven:maven-core", version = "3.9.6" }
 gradle-enterprise-extension = { module = "com.gradle:gradle-enterprise-maven-extension", version = "1.20.1" }
-develocity-extension = { module = "com.gradle:develocity-maven-extension", version = "1.21-rc-5" }
+develocity-extension = { module = "com.gradle:develocity-maven-extension", version = "1.21" }
 junit-bom = { module = "org.junit:junit-bom", version.ref = "jupiter" }
 mockito-core = { module = "org.mockito:mockito-core", version.ref = "mockito" }
 mockito-jupiter = { module = "org.mockito:mockito-junit-jupiter", version.ref = "mockito" }

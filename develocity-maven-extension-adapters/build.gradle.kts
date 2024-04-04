@@ -7,12 +7,7 @@ plugins {
 version = "1.0.1"
 
 repositories {
-    maven {
-        url = uri("https://repo.grdev.net/artifactory/public")
-        content {
-            includeVersion("com.gradle", "develocity-maven-extension", "1.21-rc-5")
-        }
-    }
+    mavenCentral()
 }
 
 dependencies {
