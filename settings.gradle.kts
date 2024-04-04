@@ -1,6 +1,6 @@
 plugins {
     id("com.gradle.enterprise") version "3.16.2"
-    id("com.gradle.enterprise.gradle-enterprise-conventions-plugin") version "0.7.5"
+    id("com.gradle.common-custom-user-data-gradle-plugin") version "1.13"
 }
 
 rootProject.name = "develocity-agent-adapters"
