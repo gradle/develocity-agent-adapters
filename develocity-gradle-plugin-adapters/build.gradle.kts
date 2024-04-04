@@ -8,12 +8,6 @@ version = "1.0.1"
 
 repositories {
     gradlePluginPortal()
-    maven {
-        url = uri("https://repo.grdev.net/artifactory/public")
-        content {
-            includeVersion("com.gradle", "develocity-gradle-plugin", "3.17-rc-4")
-        }
-    }
 }
 
 dependencies {
