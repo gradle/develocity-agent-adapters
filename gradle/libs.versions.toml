@@ -14,4 +14,4 @@ develocity-extension = { module = "com.gradle:develocity-maven-extension", versi
 junit-bom = { module = "org.junit:junit-bom", version.ref = "jupiter" }
 mockito-core = { module = "org.mockito:mockito-core", version.ref = "mockito" }
 mockito-jupiter = { module = "org.mockito:mockito-junit-jupiter", version.ref = "mockito" }
-log4j = { module = "org.slf4j:slf4j-log4j12", version = "2.0.12" }
+log4j = { module = "org.slf4j:slf4j-log4j12", version = "2.0.13" }
