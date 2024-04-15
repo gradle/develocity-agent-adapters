@@ -21,6 +21,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Collections;
+import java.util.List;
 
 import static com.gradle.develocity.agent.gradle.adapters.ActionMockFixtures.doExecuteActionWith;
 import static com.gradle.develocity.agent.gradle.adapters.PropertyMockFixtures.mockProperty;
@@ -163,11 +164,16 @@ public class BuildScanConfigurationAdapterTest {
 
     @Test
     @DisplayName("build finished action can be configured via an adapter using the new build result model")
+    @SuppressWarnings("Convert2Lambda")
     void testBuildFinishedAction() {
         // given
         Throwable failure = new RuntimeException("New build failure!");
-        BuildResult buildResult = mock();
-        when(buildResult.getFailures()).thenReturn(Collections.singletonList(failure));
+        BuildResult buildResult = new BuildResult() {
+            @Override
+            public List<Throwable> getFailures() {
+                return Collections.singletonList(failure);
+            }
+        };
 
         // and
         doExecuteActionWith(buildResult).when(configuration).buildFinished(any());

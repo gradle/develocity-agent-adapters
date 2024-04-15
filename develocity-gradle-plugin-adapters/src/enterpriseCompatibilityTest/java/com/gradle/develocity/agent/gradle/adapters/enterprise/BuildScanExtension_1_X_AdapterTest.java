@@ -1,18 +1,20 @@
 package com.gradle.develocity.agent.gradle.adapters.enterprise;
 
-import com.gradle.develocity.agent.gradle.adapters.ActionMockFixtures;
 import com.gradle.develocity.agent.gradle.adapters.ActionMockFixtures.ArgCapturingAction;
 import com.gradle.develocity.agent.gradle.adapters.BuildResultAdapter;
 import com.gradle.develocity.agent.gradle.adapters.DevelocityAdapter;
 import com.gradle.develocity.agent.gradle.adapters.PublishedBuildScanAdapter;
 import com.gradle.enterprise.gradleplugin.GradleEnterpriseExtension;
+import com.gradle.scan.plugin.BuildResult;
 import com.gradle.scan.plugin.BuildScanExtension;
+import com.gradle.scan.plugin.PublishedBuildScan;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.net.URI;
 import java.util.Collections;
 
 import static com.gradle.develocity.agent.gradle.adapters.ActionMockFixtures.doExecuteActionWith;
@@ -25,7 +27,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class BuildScanExtension_1_X_AdapterTest {
@@ -221,11 +222,16 @@ public class BuildScanExtension_1_X_AdapterTest {
 
     @Test
     @DisplayName("build finished action can be configured via an adapter using the new build result model")
+    @SuppressWarnings("Convert2Lambda")
     void testBuildFinishedAction() {
         // given
         Throwable failure = new RuntimeException("Old build failure!");
-        com.gradle.scan.plugin.BuildResult buildResult = mock();
-        when(buildResult.getFailure()).thenReturn(failure);
+        BuildResult buildResult = new BuildResult() {
+            @Override
+            public Throwable getFailure() {
+                return failure;
+            }
+        };
 
         // and
         doExecuteActionWith(buildResult).when(extension).buildFinished(any());
@@ -242,8 +248,17 @@ public class BuildScanExtension_1_X_AdapterTest {
     @DisplayName("build scan published action can be configured via an adapter using the new scan model")
     void testBuildScanPublishedAction() {
         // given
-        com.gradle.scan.plugin.PublishedBuildScan publishedScan = mock();
-        when(publishedScan.getBuildScanId()).thenReturn("scanId");
+        PublishedBuildScan publishedScan = new PublishedBuildScan() {
+            @Override
+            public String getBuildScanId() {
+                return "scanId";
+            }
+
+            @Override
+            public URI getBuildScanUri() {
+                return null;
+            }
+        };
         doExecuteActionWith(publishedScan).when(extension).buildScanPublished(any());
 
         // when

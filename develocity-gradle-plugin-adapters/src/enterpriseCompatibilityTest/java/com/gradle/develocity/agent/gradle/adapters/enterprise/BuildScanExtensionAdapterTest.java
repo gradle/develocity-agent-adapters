@@ -1,6 +1,5 @@
 package com.gradle.develocity.agent.gradle.adapters.enterprise;
 
-import com.gradle.develocity.agent.gradle.adapters.ActionMockFixtures;
 import com.gradle.develocity.agent.gradle.adapters.ActionMockFixtures.ArgCapturingAction;
 import com.gradle.develocity.agent.gradle.adapters.BuildResultAdapter;
 import com.gradle.develocity.agent.gradle.adapters.BuildScanAdapter;
@@ -17,6 +16,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.net.URI;
 import java.util.Collections;
 
 import static com.gradle.develocity.agent.gradle.adapters.ActionMockFixtures.doExecuteActionWith;
@@ -158,11 +158,16 @@ class BuildScanExtensionAdapterTest {
 
     @Test
     @DisplayName("can run the build finished action using the proxy")
+    @SuppressWarnings("Convert2Lambda")
     void testBuildFinishedAction() {
         // given
         Throwable failure = new RuntimeException("Boom!");
-        BuildResult buildResult = mock();
-        when(buildResult.getFailure()).thenReturn(failure);
+        BuildResult buildResult = new BuildResult() {
+            @Override
+            public Throwable getFailure() {
+                return failure;
+            }
+        };
         doExecuteActionWith(buildResult).when(extension).buildFinished(any());
 
         // when
@@ -177,8 +182,17 @@ class BuildScanExtensionAdapterTest {
     @DisplayName("can run the build scan published action using the proxy")
     void testBuildScanPublishedAction() {
         // given
-        PublishedBuildScan scan = mock();
-        when(scan.getBuildScanId()).thenReturn("scanId");
+        PublishedBuildScan scan = new PublishedBuildScan() {
+            @Override
+            public String getBuildScanId() {
+                return "scanId";
+            }
+
+            @Override
+            public URI getBuildScanUri() {
+                return null;
+            }
+        };
         doExecuteActionWith(scan).when(extension).buildScanPublished(any());
 
         // when
