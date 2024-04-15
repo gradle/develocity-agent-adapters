@@ -35,6 +35,10 @@ public final class ProxyFactory {
             try {
                 Method targetMethod = target.getClass().getMethod(method.getName(), convertTypes(method.getParameterTypes(), target.getClass().getClassLoader()));
                 Object[] targetArgs = toTargetArgs(args);
+
+                // we always invoke public methods, but we need to make it accessible when it is implemented in anonymous classes
+                targetMethod.setAccessible(true);
+
                 Object result = targetMethod.invoke(target, targetArgs);
                 if (result == null || isJdkType(result.getClass())) {
                     return result;
