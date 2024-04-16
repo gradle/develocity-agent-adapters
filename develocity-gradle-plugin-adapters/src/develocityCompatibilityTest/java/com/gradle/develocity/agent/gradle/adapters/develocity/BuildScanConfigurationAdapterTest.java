@@ -187,6 +187,35 @@ public class BuildScanConfigurationAdapterTest {
     }
 
     @Test
+    @DisplayName("can run the build finished action using the proxy when the build result has custom failures")
+    @SuppressWarnings("Convert2Lambda")
+    void testBuildFinishedActionWithCustomException() {
+        // given
+        class CustomException extends Throwable {
+            public CustomException(String message) {
+                super(message);
+            }
+        }
+
+        // and
+        Throwable failure = new CustomException("Boom!");
+        BuildResult buildResult = new BuildResult() {
+            @Override
+            public List<Throwable> getFailures() {
+                return Collections.singletonList(failure);
+            }
+        };
+        doExecuteActionWith(buildResult).when(configuration).buildFinished(any());
+
+        // when
+        ArgCapturingAction<BuildResultAdapter> capturer = new ArgCapturingAction<>();
+        adapter.buildFinished(capturer);
+
+        // then
+        assertEquals(Collections.singletonList(failure), capturer.getValue().getFailures());
+    }
+
+    @Test
     @DisplayName("build scan published action can be configured via an adapter using the new scan model")
     void testBuildScanPublishedAction() {
         // given
