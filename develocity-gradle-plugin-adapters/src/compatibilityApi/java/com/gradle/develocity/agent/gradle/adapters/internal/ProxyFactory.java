@@ -40,7 +40,7 @@ public final class ProxyFactory {
                 targetMethod.setAccessible(true);
 
                 Object result = targetMethod.invoke(target, targetArgs);
-                if (result == null || isJdkType(result.getClass())) {
+                if (result == null || isJdkTypeOrThrowable(result.getClass())) {
                     return result;
                 }
                 return createProxy(result, method.getReturnType());
@@ -62,7 +62,7 @@ public final class ProxyFactory {
             if (args.length == 1 && args[0] instanceof Function) {
                 return new Object[]{adaptFunctionArg((Function<?, ?>) args[0])};
             }
-            if (Arrays.stream(args).allMatch(it -> isJdkType(it.getClass()))) {
+            if (Arrays.stream(args).allMatch(it -> isJdkTypeOrThrowable(it.getClass()))) {
                 return args;
             }
             throw new RuntimeException("Unsupported argument types in " + Arrays.toString(args));
@@ -84,7 +84,7 @@ public final class ProxyFactory {
         }
 
         private static Object createLocalProxy(Object target) {
-            if (isJdkType(target.getClass())) {
+            if (isJdkTypeOrThrowable(target.getClass())) {
                 return target;
             }
 
@@ -118,7 +118,7 @@ public final class ProxyFactory {
             }
             return Arrays.stream(parameterTypes)
                 .map(type -> {
-                    if (isJdkType(type)) {
+                    if (isJdkTypeOrThrowable(type)) {
                         return type;
                     }
 
@@ -131,9 +131,11 @@ public final class ProxyFactory {
                 .toArray(Class<?>[]::new);
         }
 
-        private static boolean isJdkType(Class<?> type) {
+        private static boolean isJdkTypeOrThrowable(Class<?> type) {
             ClassLoader typeClassLoader = type.getClassLoader();
-            return typeClassLoader == null || typeClassLoader.equals(Object.class.getClassLoader());
+            // JDK types are present across classloaders, so there is no need to create proxies for those
+            // we can't create proxies for instances of Throwable as there is no shared interface
+            return typeClassLoader == null || typeClassLoader.equals(Object.class.getClassLoader()) || Throwable.class.isAssignableFrom(type);
         }
 
     }
