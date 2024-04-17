@@ -117,6 +117,8 @@ publishing {
 }
 
 signing {
+    isRequired = providers.environmentVariable("CI").isPresent
+
     sign(publishing.publications["mavenJava"])
     useInMemoryPgpKeys(System.getenv("PGP_SIGNING_KEY"), System.getenv("PGP_SIGNING_KEY_PASSPHRASE"))
 }
