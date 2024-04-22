@@ -1,5 +1,5 @@
 plugins {
-    id("com.gradle.develocity") version "3.17.1"
+    id("com.gradle.develocity") version "3.17.2"
     id("com.gradle.enterprise.gradle-enterprise-conventions-plugin") version "0.7.5"
 }
 
