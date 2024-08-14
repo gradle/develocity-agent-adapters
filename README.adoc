@@ -14,7 +14,7 @@ See the in-code documentation for the corresponding Gradle plugin or Maven exten
 .Gradle
 [source,kotlin]
 ----
-implementation("com.gradle:develocity-gradle-plugin-adapters:1.0")
+implementation("com.gradle:develocity-gradle-plugin-adapters:1.0.2")
 ----
 
 .Maven
