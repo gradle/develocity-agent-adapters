@@ -14,7 +14,11 @@ import java.util.function.Function;
 public final class ProxyFactory {
 
     public static <T> T createProxy(Object target, Class<T> targetInterface) {
-        return newProxyInstance(targetInterface, new ProxyingInvocationHandler(target));
+        return createProxy(target, targetInterface, target.getClass().getClassLoader());
+    }
+
+    private static <T> T createProxy(Object target, Class<T> targetInterface, ClassLoader develocityTypesClassLoader) {
+        return newProxyInstance(targetInterface, new ProxyingInvocationHandler(target, develocityTypesClassLoader));
     }
 
     @SuppressWarnings("unchecked")
@@ -25,16 +29,18 @@ public final class ProxyFactory {
     private static final class ProxyingInvocationHandler implements InvocationHandler {
 
         private final Object target;
+        private final ClassLoader develocityTypesClassLoader;
 
-        private ProxyingInvocationHandler(Object target) {
+        private ProxyingInvocationHandler(Object target, ClassLoader develocityTypesClassLoader) {
             this.target = target;
+            this.develocityTypesClassLoader = develocityTypesClassLoader;
         }
 
         @Override
         public Object invoke(Object proxy, Method method, Object[] args) {
             try {
-                Method targetMethod = target.getClass().getMethod(method.getName(), convertTypes(method.getParameterTypes(), target.getClass().getClassLoader()));
-                Object[] targetArgs = toTargetArgs(args);
+                Method targetMethod = target.getClass().getMethod(method.getName(), convertTypes(method.getParameterTypes(), develocityTypesClassLoader));
+                Object[] targetArgs = toTargetArgs(args, develocityTypesClassLoader);
 
                 // we always invoke public methods, but we need to make it accessible when it is implemented in anonymous classes
                 targetMethod.setAccessible(true);
@@ -42,14 +48,16 @@ public final class ProxyFactory {
                 Object result = targetMethod.invoke(target, targetArgs);
                 if (result == null || isJdkTypeOrThrowable(result.getClass())) {
                     return result;
+                } else if (result instanceof Enum) {
+                    return adaptEnumArg((Enum<?>) result, develocityTypesClassLoader);
                 }
-                return createProxy(result, method.getReturnType());
+                return createProxy(result, method.getReturnType(), develocityTypesClassLoader);
             } catch (Throwable e) {
                 throw new RuntimeException("Failed to invoke " + method + " on " + target + " with args " + Arrays.toString(args), e);
             }
         }
 
-        private static Object[] toTargetArgs(Object[] args) {
+        private Object[] toTargetArgs(Object[] args, ClassLoader classLoader) throws ClassNotFoundException {
             if (args == null || args.length == 0) {
                 return args;
             }
@@ -62,6 +70,9 @@ public final class ProxyFactory {
             if (args.length == 1 && args[0] instanceof Function) {
                 return new Object[]{adaptFunctionArg((Function<?, ?>) args[0])};
             }
+            if (args.length == 1 && args[0] instanceof Enum) {
+                return new Object[]{adaptEnumArg((Enum<?>) args[0], classLoader)};
+            }
             if (Arrays.stream(args).allMatch(it -> isJdkTypeOrThrowable(it.getClass()))) {
                 return args;
             }
@@ -69,21 +80,26 @@ public final class ProxyFactory {
         }
 
         @SuppressWarnings({"rawtypes", "unchecked"})
-        private static Action<Object> adaptActionArg(Action action) {
+        private static Enum<?> adaptEnumArg(Enum<?> arg, ClassLoader classLoader) throws ClassNotFoundException {
+            return Enum.valueOf((Class<Enum>) classLoader.loadClass(arg.getClass().getName()), arg.name());
+        }
+
+        @SuppressWarnings({"rawtypes", "unchecked"})
+        private Action<Object> adaptActionArg(Action action) {
             return arg -> action.execute(createLocalProxy(arg));
         }
 
         @SuppressWarnings({"rawtypes", "unchecked"})
-        private static Spec<Object> adaptSpecArg(Spec spec) {
+        private Spec<Object> adaptSpecArg(Spec spec) {
             return arg -> spec.isSatisfiedBy(createLocalProxy(arg));
         }
 
         @SuppressWarnings({"rawtypes", "unchecked"})
-        private static Function<Object, Object> adaptFunctionArg(Function func) {
+        private Function<Object, Object> adaptFunctionArg(Function func) {
             return arg -> func.apply(createLocalProxy(arg));
         }
 
-        private static Object createLocalProxy(Object target) {
+        private Object createLocalProxy(Object target) {
             if (isJdkTypeOrThrowable(target.getClass())) {
                 return target;
             }
@@ -92,7 +108,7 @@ public final class ProxyFactory {
             return Proxy.newProxyInstance(
                 localClassLoader,
                 convertTypes(collectInterfaces(target.getClass()), localClassLoader),
-                new ProxyingInvocationHandler(target)
+                new ProxyingInvocationHandler(target, develocityTypesClassLoader)
             );
         }
 

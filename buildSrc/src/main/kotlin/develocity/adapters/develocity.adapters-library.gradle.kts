@@ -51,6 +51,17 @@ dependencies {
 
 testing {
     suites {
+        val compatibilityApiTest by creating(JvmTestSuite::class) {
+            useJUnitJupiter()
+
+            dependencies {
+                implementation(sourceSetOutput("compatibilityApi"))
+                implementation(testFixtures(project()))
+                implementation(platform(libs.junit.bom))
+                implementation("org.junit.jupiter:junit-jupiter")
+            }
+        }
+
         val enterpriseCompatibilityTest by creating(JvmTestSuite::class) {
             useJUnitJupiter()
 
