@@ -14,11 +14,11 @@ import java.util.function.Function;
 public final class ProxyFactory {
 
     public static <T> T createProxy(Object target, Class<T> targetInterface) {
-        return createProxy(target, targetInterface, target.getClass().getClassLoader());
+        return createProxy(target, targetInterface, target);
     }
 
-    private static <T> T createProxy(Object target, Class<T> targetInterface, ClassLoader develocityTypesClassLoader) {
-        return newProxyInstance(targetInterface, new ProxyingInvocationHandler(target, develocityTypesClassLoader));
+    private static <T> T createProxy(Object target, Class<T> targetInterface, Object topLevelDevelocityTarget) {
+        return newProxyInstance(targetInterface, new ProxyingInvocationHandler(target, topLevelDevelocityTarget));
     }
 
     @SuppressWarnings("unchecked")
@@ -29,16 +29,19 @@ public final class ProxyFactory {
     private static final class ProxyingInvocationHandler implements InvocationHandler {
 
         private final Object target;
-        private final ClassLoader develocityTypesClassLoader;
+        // this is the top-level Develocity extension instance that we proxy to.
+        // We pass it around to be able to access a classloader for Develocity types in a configuration cache compatible manner
+        private final Object topLevelDevelocityTarget;
 
-        private ProxyingInvocationHandler(Object target, ClassLoader develocityTypesClassLoader) {
+        private ProxyingInvocationHandler(Object target, Object topLevelDevelocityTarget) {
             this.target = target;
-            this.develocityTypesClassLoader = develocityTypesClassLoader;
+            this.topLevelDevelocityTarget = topLevelDevelocityTarget;
         }
 
         @Override
         public Object invoke(Object proxy, Method method, Object[] args) {
             try {
+                ClassLoader develocityTypesClassLoader = topLevelDevelocityTarget.getClass().getClassLoader();
                 Method targetMethod = target.getClass().getMethod(method.getName(), convertTypes(method.getParameterTypes(), develocityTypesClassLoader));
                 Object[] targetArgs = toTargetArgs(args, develocityTypesClassLoader);
 
@@ -51,7 +54,7 @@ public final class ProxyFactory {
                 } else if (result instanceof Enum) {
                     return adaptEnumArg((Enum<?>) result, develocityTypesClassLoader);
                 }
-                return createProxy(result, method.getReturnType(), develocityTypesClassLoader);
+                return createProxy(result, method.getReturnType(), topLevelDevelocityTarget);
             } catch (Throwable e) {
                 throw new RuntimeException("Failed to invoke " + method + " on " + target + " with args " + Arrays.toString(args), e);
             }
@@ -108,7 +111,7 @@ public final class ProxyFactory {
             return Proxy.newProxyInstance(
                 localClassLoader,
                 convertTypes(collectInterfaces(target.getClass()), localClassLoader),
-                new ProxyingInvocationHandler(target, develocityTypesClassLoader)
+                new ProxyingInvocationHandler(target, topLevelDevelocityTarget)
             );
         }
 
