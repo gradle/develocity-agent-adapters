@@ -104,7 +104,7 @@ publishing {
         pom {
             name = publicationExtension.name
             description = publicationExtension.description
-            url.set("https://github.com/gradle/develocity-api-adapters/")
+            url.set("https://github.com/gradle/develocity-agent-adapters/")
             licenses {
                 license {
                     name.set("Apache-2.0")
@@ -119,9 +119,9 @@ publishing {
                 }
             }
             scm {
-                connection.set("scm:git:git://github.com/gradle/develocity-api-adapters.git")
-                developerConnection.set("scm:git:ssh://git@github.com:gradle/develocity-api-adapters.git")
-                url.set("https://github.com/gradle/develocity-api-adapters/")
+                connection.set("scm:git:git://github.com/gradle/develocity-agent-adapters.git")
+                developerConnection.set("scm:git:ssh://git@github.com:gradle/develocity-agent-adapters.git")
+                url.set("https://github.com/gradle/develocity-agent-adapters/")
             }
         }
     }

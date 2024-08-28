@@ -9,7 +9,7 @@
 
     <name>Develocity API adapters TeamCity Config DSL</name>
     <groupId>com.gradle</groupId>
-    <artifactId>develocity-api-adapters</artifactId>
+    <artifactId>develocity-agent-adapters</artifactId>
 
     <version>1.0-SNAPSHOT</version>
 
