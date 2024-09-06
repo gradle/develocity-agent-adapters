@@ -32,3 +32,9 @@ develocityAdaptersPublication {
     name = "Develocity API adapters for Develocity and Gradle Enterprise Maven extensions"
     description = "Adapter interfaces for interacting with the Develocity and Gradle Enterprise Maven extension APIs"
 }
+
+tasks.withType<Jar>().configureEach {
+    from(file("../LICENSE")) {
+        into("META-INF")
+    }
+}
