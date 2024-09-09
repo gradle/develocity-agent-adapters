@@ -34,7 +34,7 @@ develocityAdaptersPublication {
 }
 
 tasks.withType<Jar>().configureEach {
-    from(file("../LICENSE")) {
-        into("META-INF")
+    into(".") {
+        from(rootProject.layout.projectDirectory.file("../LICENSE"))
     }
 }
