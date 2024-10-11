@@ -2,5 +2,15 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   extends: [
     "github>gradle/renovate-agent//presets/dv.json5"
+  ],
+  "packageRules": [
+    {
+      "description": "Use the last version of the Gradle Enterprise plugin and extension that does not provide the Develocity API",
+      "matchDepNames": [
+        "com.gradle:gradle-enterprise-gradle-plugin",
+        "com.gradle:gradle-enterprise-maven-extension"
+      ],
+      "enabled": false
+    }
   ]
 }
