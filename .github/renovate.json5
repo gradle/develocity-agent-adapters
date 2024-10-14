@@ -11,6 +11,14 @@
         "com.gradle:gradle-enterprise-maven-extension"
       ],
       "enabled": false
+    },
+    {
+      "description": "Newer versions of Mockito are no longer compatible with Java 8",
+      "matchDepNames": [
+        "org.mockito:mockito-junit-jupiter",
+        "org.mockito:mockito-core"
+      ],
+      "allowedVersions": "^4.0.0"
     }
   ]
 }
