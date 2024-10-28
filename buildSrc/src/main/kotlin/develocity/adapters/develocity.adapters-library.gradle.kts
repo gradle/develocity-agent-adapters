@@ -38,6 +38,9 @@ tasks.jar {
     from(sourceSetOutput("compatibilityApi"))
     from(sourceSetOutput("enterpriseCompatibility"))
     from(sourceSetOutput("develocityCompatibility"))
+    into(".") {
+        from(rootProject.layout.projectDirectory.file("LICENSE"))
+    }
 }
 
 val javaComponent = components["java"] as AdhocComponentWithVariants
