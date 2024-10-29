@@ -32,9 +32,3 @@ develocityAdaptersPublication {
     name = "Develocity Gradle API adapters for Develocity and Gradle Enterprise Gradle plugins"
     description = "Adapter interfaces for interacting with the Develocity and Gradle Enterprise Gradle plugins"
 }
-
-tasks.withType<Jar>().configureEach {
-    into(".") {
-        from(rootProject.layout.projectDirectory.file("../LICENSE"))
-    }
-}
