@@ -2,6 +2,7 @@ package com.gradle.develocity.agent.gradle.adapters.enterprise;
 
 import com.gradle.develocity.agent.gradle.adapters.DevelocityAdapter;
 import com.gradle.enterprise.gradleplugin.GradleEnterpriseExtension;
+import com.gradle.enterprise.gradleplugin.internal.extension.GradleEnterpriseExtensionWithHiddenFeatures;
 import com.gradle.scan.plugin.BuildScanExtension;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -10,6 +11,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
@@ -41,6 +43,19 @@ class GradleEnterpriseExtensionAdapterTest {
 
         // then
         assertTrue(e.getMessage().contains("is not a Gradle Enterprise extension"));
+    }
+
+    @Test
+    @DisplayName("can unwrap deeply nested Gradle Enterprise extension")
+    void testNestedExtension() {
+        // when
+        GradleEnterpriseExtension nestedExtension = mock(DeeplyNestedGradleEnterpriseExtensionWrapper.class);
+        when(nestedExtension.getBuildScan()).thenReturn(buildScan);
+
+        GradleEnterpriseExtensionAdapter adapter = new GradleEnterpriseExtensionAdapter(nestedExtension);
+
+        // then
+        assertNotNull(adapter);
     }
 
     @Test
@@ -140,4 +155,7 @@ class GradleEnterpriseExtensionAdapterTest {
         verify(buildScan).setTermsOfServiceUrl("server");
     }
 
+    interface GradleEnterpriseExtensionWrapper extends GradleEnterpriseExtension {}
+    interface NestedGradleEnterpriseExtensionWrapper extends GradleEnterpriseExtensionWrapper {}
+    interface DeeplyNestedGradleEnterpriseExtensionWrapper extends NestedGradleEnterpriseExtensionWrapper {}
 }

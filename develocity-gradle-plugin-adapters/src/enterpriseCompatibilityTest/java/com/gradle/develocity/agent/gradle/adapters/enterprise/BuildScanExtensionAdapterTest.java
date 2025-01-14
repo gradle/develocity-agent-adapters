@@ -265,11 +265,13 @@ class BuildScanExtensionAdapterTest {
 
         // when
         adapter.capture(c -> {
+            c.setFileFingerprints(true);
             c.setBuildLogging(true);
             c.setTestLogging(false);
         });
 
         // then
+        verify(capture).setTaskInputFiles(true);
         verify(capture).setBuildLogging(true);
         verify(capture).setTestLogging(false);
     }
