@@ -32,13 +32,7 @@ public class AdapterTypeUtils {
     private static boolean implementsInterface(Object object, String interfaceName) {
         Class<?> clazz = object.getClass();
         while (clazz != null) {
-            Class<?>[] interfaces = clazz.getInterfaces();
-            boolean implementsInterface = Stream.concat(
-                Arrays.stream(interfaces),
-                Arrays.stream(interfaces).flatMap(it -> Arrays.stream(it.getInterfaces()))
-            ).anyMatch(it -> interfaceName.equals(it.getName()));
-
-            if (implementsInterface) {
+            if (implementsInterface(clazz, interfaceName)) {
                 return true;
             }
 
@@ -46,5 +40,13 @@ public class AdapterTypeUtils {
         }
 
         return false;
+    }
+
+    private static boolean implementsInterface(Class<?> clazz, String interfaceName) {
+        if (interfaceName.equals(clazz.getName())) {
+            return true;
+        }
+
+        return Arrays.stream(clazz.getInterfaces()).anyMatch(it -> implementsInterface(it, interfaceName));
     }
 }
