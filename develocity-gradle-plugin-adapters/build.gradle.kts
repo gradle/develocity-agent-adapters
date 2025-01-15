@@ -4,7 +4,7 @@ plugins {
     id("develocity.adapters-library")
 }
 
-version = "1.1"
+version = "1.1.1"
 
 repositories {
     gradlePluginPortal()
