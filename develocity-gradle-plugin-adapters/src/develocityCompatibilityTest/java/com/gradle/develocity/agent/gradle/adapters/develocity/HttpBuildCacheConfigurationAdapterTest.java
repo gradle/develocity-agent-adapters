@@ -1,7 +1,5 @@
 package com.gradle.develocity.agent.gradle.adapters.develocity;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
@@ -43,7 +41,6 @@ public class HttpBuildCacheConfigurationAdapterTest {
         // when
         adapter.setServer("server");
         adapter.setPath("path");
-        adapter.setUseExpectContinue(true);
 
         // then
         verifyNoInteractions(cache);
@@ -51,7 +48,6 @@ public class HttpBuildCacheConfigurationAdapterTest {
         // then
         assertNull(adapter.getServer());
         assertNull(adapter.getPath());
-        assertFalse(adapter.getUseExpectContinue());
     }
 
     @Test
@@ -84,6 +80,22 @@ public class HttpBuildCacheConfigurationAdapterTest {
 
         // then
         assertTrue(adapter.getAllowInsecureProtocol());
+    }
+
+    @Test
+    @DisplayName("can set and retrieve the useExpectContinue value using adapter")
+    void testUseExpectContinue() {
+        // when
+        adapter.setUseExpectContinue(true);
+
+        // then
+        verify(cache).setUseExpectContinue(true);
+
+        // when
+        when(cache.isUseExpectContinue()).thenReturn(true);
+
+        // then
+        assertTrue(adapter.getUseExpectContinue());
     }
 
     @Test
