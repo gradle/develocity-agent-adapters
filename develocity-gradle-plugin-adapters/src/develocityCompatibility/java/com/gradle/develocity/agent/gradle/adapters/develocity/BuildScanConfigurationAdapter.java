@@ -35,12 +35,12 @@ class BuildScanConfigurationAdapter implements BuildScanAdapter {
 
     private final BuildScanConfiguration buildScan;
     private final BuildScanCaptureConfigurationAdapter capture;
-    private final BuildScanDataObfuscationConfigurationAdapter obfuscation;
+    private final BuildScanObfuscationAdapter obfuscation;
 
     BuildScanConfigurationAdapter(BuildScanConfiguration buildScan) {
         this.buildScan = buildScan;
         this.capture = new BuildScanCaptureConfigurationAdapter(buildScan.getCapture());
-        this.obfuscation = new BuildScanDataObfuscationConfigurationAdapter(buildScan.getObfuscation());
+        this.obfuscation = BuildScanDataObfuscationConfigurationAdapter.forBuildScanExtension(buildScan);
     }
 
     @Override
