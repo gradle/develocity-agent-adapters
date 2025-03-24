@@ -4,7 +4,6 @@ import com.gradle.develocity.agent.gradle.adapters.ActionMockFixtures.ArgCapturi
 import com.gradle.develocity.agent.gradle.adapters.BuildResultAdapter;
 import com.gradle.develocity.agent.gradle.adapters.BuildScanAdapter;
 import com.gradle.develocity.agent.gradle.adapters.PublishedBuildScanAdapter;
-import com.gradle.develocity.agent.gradle.adapters.internal.ProxyFactory;
 import com.gradle.develocity.agent.gradle.scan.BuildResult;
 import com.gradle.develocity.agent.gradle.scan.BuildScanCaptureConfiguration;
 import com.gradle.develocity.agent.gradle.scan.BuildScanConfiguration;
@@ -45,7 +44,7 @@ public class BuildScanConfigurationAdapterTest {
     @BeforeEach
     void setup() {
         configuration = mock();
-        adapter = new BuildScanConfigurationAdapter(ProxyFactory.createProxy(configuration, BuildScanConfiguration.class));
+        adapter = new BuildScanConfigurationAdapter(configuration);
     }
 
     @Test
@@ -309,7 +308,7 @@ public class BuildScanConfigurationAdapterTest {
         when(configuration.getObfuscation()).thenReturn(obfuscation);
 
         // and
-        adapter = new BuildScanConfigurationAdapter(ProxyFactory.createProxy(configuration, BuildScanConfiguration.class));
+        adapter = new BuildScanConfigurationAdapter(configuration);
 
         // when
         adapter.obfuscation(o -> {
@@ -334,7 +333,7 @@ public class BuildScanConfigurationAdapterTest {
         when(configuration.getCapture()).thenReturn(capture);
 
         // and
-        adapter = new BuildScanConfigurationAdapter(ProxyFactory.createProxy(configuration, BuildScanConfiguration.class));
+        adapter = new BuildScanConfigurationAdapter(configuration);
 
         // when
         adapter.capture(c -> {

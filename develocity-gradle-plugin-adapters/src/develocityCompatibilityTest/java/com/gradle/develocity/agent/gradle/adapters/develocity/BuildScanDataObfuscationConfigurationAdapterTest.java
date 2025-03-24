@@ -1,8 +1,6 @@
 package com.gradle.develocity.agent.gradle.adapters.develocity;
 
 import com.gradle.develocity.agent.gradle.adapters.BuildScanObfuscationAdapter;
-import com.gradle.develocity.agent.gradle.adapters.internal.ProxyFactory;
-import com.gradle.develocity.agent.gradle.adapters.shared.ReflectingBuildScanObfuscationAdapter;
 import com.gradle.develocity.agent.gradle.scan.BuildScanDataObfuscationConfiguration;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -34,7 +32,7 @@ class BuildScanDataObfuscationConfigurationAdapterTest {
     @BeforeEach
     void setup() {
         obfuscation = mock();
-        adapter = BuildScanDataObfuscationConfigurationAdapter.forObfuscationConfiguration(ProxyFactory.createProxy(obfuscation, BuildScanDataObfuscationConfiguration.class));
+        adapter = BuildScanDataObfuscationConfigurationAdapter.forObfuscationConfiguration(obfuscation);
     }
 
     @Test
