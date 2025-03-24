@@ -26,6 +26,8 @@ import com.gradle.develocity.agent.gradle.adapters.BuildScanObfuscationAdapter;
 import com.gradle.develocity.agent.gradle.adapters.DevelocityAdapter;
 import com.gradle.develocity.agent.gradle.adapters.PublishedBuildScanAdapter;
 import com.gradle.develocity.agent.gradle.adapters.internal.ProxyFactory;
+import com.gradle.develocity.agent.gradle.adapters.internal.ReflectionProperty;
+import com.gradle.develocity.agent.gradle.adapters.shared.BasicReflectingBuildScanAdapter;
 import com.gradle.scan.plugin.BuildScanExtension;
 import org.gradle.api.Action;
 import org.gradle.caching.configuration.AbstractBuildCache;
@@ -43,13 +45,14 @@ import static com.gradle.develocity.agent.gradle.adapters.internal.AdapterTypeUt
  * Build Scan plugin 1.x registers the build scan extension as the root extension.
  * This adapter abstracts this detail away and allows interacting with the extension both as the root "develocity" extension and as the "buildScan" extension
  */
-public class BuildScanExtension_1_X_Adapter implements DevelocityAdapter, BuildScanAdapter {
+public class BuildScanExtension_1_X_Adapter extends BasicReflectingBuildScanAdapter implements DevelocityAdapter {
 
     private static final Logger LOG = LoggerFactory.getLogger(BuildScanExtension_1_X_Adapter.class);
 
     private final BuildScanExtension extension;
 
     public BuildScanExtension_1_X_Adapter(Object extension) {
+        super(extension);
         checkIsBuildScanExtension(extension);
         this.extension = ProxyFactory.createProxy(extension, BuildScanExtension.class);
     }
@@ -57,21 +60,6 @@ public class BuildScanExtension_1_X_Adapter implements DevelocityAdapter, BuildS
     @Override
     public void background(Action<? super BuildScanAdapter> action) {
         extension.background(__ -> action.execute(this));
-    }
-
-    @Override
-    public void tag(String tag) {
-        extension.tag(tag);
-    }
-
-    @Override
-    public void value(String name, String value) {
-        extension.value(name, value);
-    }
-
-    @Override
-    public void link(String name, String url) {
-        extension.link(name, url);
     }
 
     @Override
@@ -101,27 +89,18 @@ public class BuildScanExtension_1_X_Adapter implements DevelocityAdapter, BuildS
     }
 
     @Override
-    public void setTermsOfUseUrl(String termsOfServiceUrl) {
-        extension.setTermsOfServiceUrl(termsOfServiceUrl);
-    }
-
-    @Nullable
-    @Override
-    public String getTermsOfUseUrl() {
-        warnAboutUnsupportedOperation("getTermsOfServiceUrl()");
-        return null;
+    protected ReflectionProperty<String> getTermsOfUseUrlProperty() {
+        return ReflectionProperty.create(extension, "getTermsOfServiceUrl", "setTermsOfServiceUrl");
     }
 
     @Override
-    public void setTermsOfUseAgree(@Nullable String agree) {
-        extension.setTermsOfServiceAgree(agree);
+    protected ReflectionProperty<String> getTermsOfUseAgreeProperty() {
+        return ReflectionProperty.create(extension, "getTermsOfServiceAgree", "setTermsOfServiceAgree");
     }
 
-    @Nullable
     @Override
-    public String getTermsOfUseAgree() {
-        warnAboutUnsupportedOperation("getTermsOfServiceAgree()");
-        return null;
+    protected ReflectionProperty<Boolean> getUploadInBackgroundProperty() {
+        return ReflectionProperty.create(extension, "isUploadInBackground", "setUploadInBackground");
     }
 
     @Override

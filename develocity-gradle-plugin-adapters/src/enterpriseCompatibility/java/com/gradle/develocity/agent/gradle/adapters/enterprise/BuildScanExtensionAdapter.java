@@ -24,6 +24,8 @@ import com.gradle.develocity.agent.gradle.adapters.BuildScanAdapter;
 import com.gradle.develocity.agent.gradle.adapters.BuildScanCaptureAdapter;
 import com.gradle.develocity.agent.gradle.adapters.BuildScanObfuscationAdapter;
 import com.gradle.develocity.agent.gradle.adapters.PublishedBuildScanAdapter;
+import com.gradle.develocity.agent.gradle.adapters.internal.ReflectionProperty;
+import com.gradle.develocity.agent.gradle.adapters.shared.BasicReflectingBuildScanAdapter;
 import com.gradle.scan.plugin.BuildScanExtension;
 import org.gradle.api.Action;
 import org.jetbrains.annotations.Nullable;
@@ -32,13 +34,14 @@ import java.net.URI;
 import java.util.Collections;
 import java.util.List;
 
-class BuildScanExtensionAdapter implements BuildScanAdapter {
+class BuildScanExtensionAdapter extends BasicReflectingBuildScanAdapter {
 
     private final BuildScanExtension buildScan;
     private final BuildScanCaptureAdapter capture;
     private final BuildScanObfuscationAdapter obfuscation;
 
     BuildScanExtensionAdapter(BuildScanExtension buildScan) {
+        super(buildScan);
         this.buildScan = buildScan;
         this.capture = BuildScanCaptureExtensionAdapter.forBuildScanExtension(buildScan);
         this.obfuscation = BuildScanDataObfuscationAdapter.forBuildScanExtension(buildScan);
@@ -47,21 +50,6 @@ class BuildScanExtensionAdapter implements BuildScanAdapter {
     @Override
     public void background(Action<? super BuildScanAdapter> action) {
         buildScan.background(__ -> action.execute(this));
-    }
-
-    @Override
-    public void tag(String tag) {
-        buildScan.tag(tag);
-    }
-
-    @Override
-    public void value(String name, String value) {
-        buildScan.value(name, value);
-    }
-
-    @Override
-    public void link(String name, String url) {
-        buildScan.link(name, url);
     }
 
     @Override
@@ -91,35 +79,18 @@ class BuildScanExtensionAdapter implements BuildScanAdapter {
     }
 
     @Override
-    public void setTermsOfUseUrl(String termsOfServiceUrl) {
-        buildScan.setTermsOfServiceUrl(termsOfServiceUrl);
-    }
-
-    @Nullable
-    @Override
-    public String getTermsOfUseUrl() {
-        return buildScan.getTermsOfServiceUrl();
+    protected ReflectionProperty<String> getTermsOfUseUrlProperty() {
+        return ReflectionProperty.create(buildScan, "getTermsOfServiceUrl", "setTermsOfServiceUrl");
     }
 
     @Override
-    public void setTermsOfUseAgree(@Nullable String agree) {
-        buildScan.setTermsOfServiceAgree(agree);
-    }
-
-    @Nullable
-    @Override
-    public String getTermsOfUseAgree() {
-        return buildScan.getTermsOfServiceAgree();
+    protected ReflectionProperty<String> getTermsOfUseAgreeProperty() {
+        return ReflectionProperty.create(buildScan, "getTermsOfServiceAgree", "setTermsOfServiceAgree");
     }
 
     @Override
-    public void setUploadInBackground(boolean uploadInBackground) {
-        buildScan.setUploadInBackground(uploadInBackground);
-    }
-
-    @Override
-    public boolean isUploadInBackground() {
-        return buildScan.isUploadInBackground();
+    protected ReflectionProperty<Boolean> getUploadInBackgroundProperty() {
+        return ReflectionProperty.create(buildScan, "isUploadInBackground", "setUploadInBackground");
     }
 
     @Override
