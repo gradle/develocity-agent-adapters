@@ -4,7 +4,6 @@ import com.gradle.develocity.agent.gradle.adapters.ActionMockFixtures.ArgCapturi
 import com.gradle.develocity.agent.gradle.adapters.BuildResultAdapter;
 import com.gradle.develocity.agent.gradle.adapters.BuildScanAdapter;
 import com.gradle.develocity.agent.gradle.adapters.PublishedBuildScanAdapter;
-import com.gradle.develocity.agent.gradle.adapters.internal.ProxyFactory;
 import com.gradle.scan.plugin.BuildResult;
 import com.gradle.scan.plugin.BuildScanCaptureSettings;
 import com.gradle.scan.plugin.BuildScanDataObfuscation;
@@ -36,7 +35,7 @@ class BuildScanExtensionAdapterTest {
     @BeforeEach
     void setup() {
         extension = mock();
-        adapter = new BuildScanExtensionAdapter(ProxyFactory.createProxy(extension, BuildScanExtension.class));
+        adapter = new BuildScanExtensionAdapter(extension);
     }
 
     @Test
@@ -240,7 +239,7 @@ class BuildScanExtensionAdapterTest {
         when(extension.getObfuscation()).thenReturn(obfuscation);
 
         // and
-        adapter = new BuildScanExtensionAdapter(ProxyFactory.createProxy(extension, BuildScanExtension.class));
+        adapter = new BuildScanExtensionAdapter(extension);
 
         // when
         adapter.obfuscation(o -> {
@@ -261,7 +260,7 @@ class BuildScanExtensionAdapterTest {
         when(extension.getCapture()).thenReturn(capture);
 
         // and
-        adapter = new BuildScanExtensionAdapter(ProxyFactory.createProxy(extension, BuildScanExtension.class));
+        adapter = new BuildScanExtensionAdapter(extension);
 
         // when
         adapter.capture(c -> {

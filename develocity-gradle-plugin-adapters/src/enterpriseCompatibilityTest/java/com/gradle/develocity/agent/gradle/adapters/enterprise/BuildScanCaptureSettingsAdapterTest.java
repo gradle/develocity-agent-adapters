@@ -1,8 +1,6 @@
 package com.gradle.develocity.agent.gradle.adapters.enterprise;
 
 import com.gradle.develocity.agent.gradle.adapters.BuildScanCaptureAdapter;
-import com.gradle.develocity.agent.gradle.adapters.internal.ProxyFactory;
-import com.gradle.develocity.agent.gradle.adapters.shared.ReflectingBuildScanCaptureAdapter;
 import com.gradle.scan.plugin.BuildScanCaptureSettings;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -24,7 +22,7 @@ class BuildScanCaptureSettingsAdapterTest {
     @BeforeEach
     void setup() {
         capture = mock();
-        adapter = BuildScanCaptureExtensionAdapter.forBuildScanCaptureSettings(ProxyFactory.createProxy(capture, BuildScanCaptureSettings.class));
+        adapter = BuildScanCaptureExtensionAdapter.forBuildScanCaptureSettings(capture);
     }
 
     @Test
