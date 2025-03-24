@@ -19,7 +19,6 @@
 
 package com.gradle.develocity.agent.gradle.adapters.enterprise;
 
-import com.gradle.develocity.agent.gradle.adapters.BuildResultAdapter;
 import com.gradle.develocity.agent.gradle.adapters.BuildScanAdapter;
 import com.gradle.develocity.agent.gradle.adapters.BuildScanCaptureAdapter;
 import com.gradle.develocity.agent.gradle.adapters.BuildScanObfuscationAdapter;
@@ -36,8 +35,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.URI;
-import java.util.Collections;
-import java.util.List;
 
 import static com.gradle.develocity.agent.gradle.adapters.internal.AdapterTypeUtils.checkIsBuildScanExtension;
 
@@ -52,25 +49,13 @@ public class BuildScanExtension_1_X_Adapter extends BasicReflectingBuildScanAdap
     private final BuildScanExtension extension;
 
     public BuildScanExtension_1_X_Adapter(Object extension) {
-        super(extension);
+        super(proxyBuildScanExtension(extension));
+        this.extension = (BuildScanExtension) buildScanExtension;
+    }
+
+    private static BuildScanExtension proxyBuildScanExtension(Object extension) {
         checkIsBuildScanExtension(extension);
-        this.extension = ProxyFactory.createProxy(extension, BuildScanExtension.class);
-    }
-
-    @Override
-    public void background(Action<? super BuildScanAdapter> action) {
-        extension.background(__ -> action.execute(this));
-    }
-
-    @Override
-    public void buildFinished(Action<? super BuildResultAdapter> action) {
-        //noinspection Convert2Lambda
-        extension.buildFinished(buildResult -> action.execute(new BuildResultAdapter() {
-            @Override
-            public List<Throwable> getFailures() {
-                return Collections.singletonList(buildResult.getFailure());
-            }
-        }));
+        return ProxyFactory.createProxy(extension, BuildScanExtension.class);
     }
 
     @Override
@@ -100,7 +85,7 @@ public class BuildScanExtension_1_X_Adapter extends BasicReflectingBuildScanAdap
 
     @Override
     protected ReflectionProperty<Boolean> getUploadInBackgroundProperty() {
-        return ReflectionProperty.create(extension, "isUploadInBackground", "setUploadInBackground");
+        return ReflectionProperty.unsupported("isUploadInBackground", "setUploadInBackground", false);
     }
 
     @Override

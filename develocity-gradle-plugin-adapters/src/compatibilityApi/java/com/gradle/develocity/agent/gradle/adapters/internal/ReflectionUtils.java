@@ -1,11 +1,13 @@
 package com.gradle.develocity.agent.gradle.adapters.internal;
 
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
-import java.util.Optional;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class ReflectionUtils {
     private static final Logger LOGGER = LoggerFactory.getLogger(ReflectionUtils.class);
@@ -14,13 +16,11 @@ public class ReflectionUtils {
 
     public static Object invokeMethod(Object obj, String method, Object... args) {
         try {
-            // this is a simplified lookup which allows us to discover methods using both primitive and wrapper types
-            Optional<Method> maybeMethod = Arrays.stream(obj.getClass().getMethods())
-                .filter(it -> it.getName().equals(method))
-                .findFirst();
+            Method maybeMethod = findMethod(obj, method, args);
 
-            if (maybeMethod.isPresent()) {
-                return maybeMethod.get().invoke(obj, args);
+            if (maybeMethod != null) {
+                maybeMethod.setAccessible(true);
+                return maybeMethod.invoke(obj, args);
             }
 
             warnAboutUnsupportedMethod(method);
@@ -29,6 +29,40 @@ public class ReflectionUtils {
             warnAboutUnsupportedMethod(method);
             return null;
         }
+    }
+
+    private static @Nullable Method findMethod(Object obj, String method, Object[] args) {
+        // this is a simplified lookup which allows us to discover methods using both primitive and wrapper types
+        List<Method> matchingMethods = Arrays.stream(obj.getClass().getMethods())
+            .filter(it -> it.getName().equals(method)).collect(Collectors.toList());
+
+        if (matchingMethods.isEmpty()) {
+            return null;
+        }
+        if (matchingMethods.size() == 1) {
+            return matchingMethods.get(0);
+        }
+        // Only when there is more than 1 candidate method do we inspect parameter types for compatibility
+        for (Method matchingMethod : matchingMethods) {
+            if (hasMatchingParameters(matchingMethod, args)) {
+                return matchingMethod;
+            }
+        }
+        return null;
+    }
+
+    private static boolean hasMatchingParameters(Method matchingMethod, Object[] args) {
+        if (matchingMethod.getParameterCount() != args.length) {
+            return false;
+        }
+        for (int i = 0; i < args.length; i++) {
+            Object arg = args[i];
+            Class<?> type = matchingMethod.getParameterTypes()[i];
+            if (!type.isAssignableFrom(arg.getClass())) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public static void withMethodSupported(Object obj, String method, Runnable action) {
