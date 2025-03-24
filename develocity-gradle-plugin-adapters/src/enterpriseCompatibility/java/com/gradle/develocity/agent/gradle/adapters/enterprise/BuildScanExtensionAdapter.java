@@ -19,8 +19,6 @@
 
 package com.gradle.develocity.agent.gradle.adapters.enterprise;
 
-import com.gradle.develocity.agent.gradle.adapters.BuildResultAdapter;
-import com.gradle.develocity.agent.gradle.adapters.BuildScanAdapter;
 import com.gradle.develocity.agent.gradle.adapters.BuildScanCaptureAdapter;
 import com.gradle.develocity.agent.gradle.adapters.BuildScanObfuscationAdapter;
 import com.gradle.develocity.agent.gradle.adapters.PublishedBuildScanAdapter;
@@ -31,8 +29,6 @@ import org.gradle.api.Action;
 import org.jetbrains.annotations.Nullable;
 
 import java.net.URI;
-import java.util.Collections;
-import java.util.List;
 
 class BuildScanExtensionAdapter extends BasicReflectingBuildScanAdapter {
 
@@ -45,22 +41,6 @@ class BuildScanExtensionAdapter extends BasicReflectingBuildScanAdapter {
         this.buildScan = buildScan;
         this.capture = BuildScanCaptureExtensionAdapter.forBuildScanExtension(buildScan);
         this.obfuscation = BuildScanDataObfuscationAdapter.forBuildScanExtension(buildScan);
-    }
-
-    @Override
-    public void background(Action<? super BuildScanAdapter> action) {
-        buildScan.background(__ -> action.execute(this));
-    }
-
-    @Override
-    public void buildFinished(Action<? super BuildResultAdapter> action) {
-        //noinspection Convert2Lambda
-        buildScan.buildFinished(buildResult -> action.execute(new BuildResultAdapter() {
-            @Override
-            public List<Throwable> getFailures() {
-                return Collections.singletonList(buildResult.getFailure());
-            }
-        }));
     }
 
     @Override

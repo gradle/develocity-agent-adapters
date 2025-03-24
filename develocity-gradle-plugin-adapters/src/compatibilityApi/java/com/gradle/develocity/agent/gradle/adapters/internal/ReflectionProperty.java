@@ -18,6 +18,16 @@ public class ReflectionProperty<T> {
         this.setter = setter;
     }
 
+    public static <T> ReflectionProperty<T> unsupported(String getterName, String setterName, T defaultValue) {
+        return new ReflectionProperty<>(
+            () -> {
+                warnAboutUnsupportedMethod(getterName);
+                return defaultValue;
+            },
+            value -> warnAboutUnsupportedMethod(setterName)
+        );
+    }
+
     public static <T> ReflectionProperty<T> create(Object obj, String getterName, String setterName) {
         return create(obj, getterName, setterName, null);
     }
