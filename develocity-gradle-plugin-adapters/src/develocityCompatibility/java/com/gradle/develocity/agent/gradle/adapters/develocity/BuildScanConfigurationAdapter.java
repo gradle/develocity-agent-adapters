@@ -23,59 +23,38 @@ import static com.gradle.develocity.agent.gradle.adapters.internal.ReflectionUti
 
 import com.gradle.develocity.agent.gradle.adapters.BuildScanCaptureAdapter;
 import com.gradle.develocity.agent.gradle.adapters.BuildScanObfuscationAdapter;
-import com.gradle.develocity.agent.gradle.adapters.PublishedBuildScanAdapter;
 import com.gradle.develocity.agent.gradle.adapters.internal.ReflectionProperty;
-import com.gradle.develocity.agent.gradle.adapters.shared.BasicReflectingBuildScanAdapter;
-import com.gradle.develocity.agent.gradle.scan.BuildScanConfiguration;
+import com.gradle.develocity.agent.gradle.adapters.shared.ReflectingBuildScanAdapter;
 
 import org.gradle.api.Action;
 import org.gradle.api.specs.Spec;
 import org.jetbrains.annotations.Nullable;
 
-import java.net.URI;
 import java.util.List;
 
-class BuildScanConfigurationAdapter extends BasicReflectingBuildScanAdapter {
-    private final BuildScanConfiguration buildScan;
-
+class BuildScanConfigurationAdapter extends ReflectingBuildScanAdapter {
     private final BuildScanCaptureAdapter capture;
     private final BuildScanObfuscationAdapter obfuscation;
 
-    BuildScanConfigurationAdapter(BuildScanConfiguration buildScan) {
+    BuildScanConfigurationAdapter(Object buildScan) {
         super(buildScan);
-        this.buildScan = buildScan;
         this.capture = BuildScanCaptureConfigurationAdapter.forBuildScanExtension(buildScan);
         this.obfuscation = BuildScanDataObfuscationConfigurationAdapter.forBuildScanExtension(buildScan);
     }
 
     @Override
-    public void buildScanPublished(Action<? super PublishedBuildScanAdapter> action) {
-        buildScan.buildScanPublished(scan -> action.execute(new PublishedBuildScanAdapter() {
-            @Override
-            public String getBuildScanId() {
-                return scan.getBuildScanId();
-            }
-
-            @Override
-            public URI getBuildScanUri() {
-                return scan.getBuildScanUri();
-            }
-        }));
-    }
-
-    @Override
     protected ReflectionProperty<String> getTermsOfUseUrlProperty() {
-        return ReflectionProperty.forProperty(buildScan, "getTermsOfUseUrl");
+        return ReflectionProperty.forProperty(buildScanExtension, "getTermsOfUseUrl");
     }
 
     @Override
     protected ReflectionProperty<String> getTermsOfUseAgreeProperty() {
-        return ReflectionProperty.forProperty(buildScan, "getTermsOfUseAgree");
+        return ReflectionProperty.forProperty(buildScanExtension, "getTermsOfUseAgree");
     }
 
     @Override
     protected ReflectionProperty<Boolean> getUploadInBackgroundProperty() {
-        return ReflectionProperty.forProperty(buildScan, "getUploadInBackground");
+        return ReflectionProperty.forProperty(buildScanExtension, "getUploadInBackground");
     }
 
     @Nullable

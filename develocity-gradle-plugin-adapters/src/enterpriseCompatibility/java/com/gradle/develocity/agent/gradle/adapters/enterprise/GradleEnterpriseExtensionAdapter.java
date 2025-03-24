@@ -21,81 +21,41 @@ package com.gradle.develocity.agent.gradle.adapters.enterprise;
 
 import com.gradle.develocity.agent.gradle.adapters.BuildScanAdapter;
 import com.gradle.develocity.agent.gradle.adapters.DevelocityAdapter;
-import com.gradle.develocity.agent.gradle.adapters.internal.ProxyFactory;
-import com.gradle.enterprise.gradleplugin.GradleEnterpriseExtension;
-import org.gradle.api.Action;
-import org.gradle.caching.configuration.AbstractBuildCache;
-import org.jetbrains.annotations.Nullable;
+import com.gradle.develocity.agent.gradle.adapters.internal.ReflectionProperty;
+import com.gradle.develocity.agent.gradle.adapters.shared.ReflectingDevelocityAdapter;
 
 import static com.gradle.develocity.agent.gradle.adapters.internal.AdapterTypeUtils.checkIsGradleEnterpriseExtension;
+import static com.gradle.develocity.agent.gradle.adapters.internal.ReflectionUtils.invokeMethod;
 
-public class GradleEnterpriseExtensionAdapter implements DevelocityAdapter {
-
-    private final GradleEnterpriseExtension extension;
-    private final BuildScanExtensionAdapter buildScan;
+public class GradleEnterpriseExtensionAdapter extends ReflectingDevelocityAdapter implements DevelocityAdapter {
 
     public GradleEnterpriseExtensionAdapter(Object extension) {
+        super(checkGradleEnterpriseExtension(extension), createBuildScanAdapter(extension));
+    }
+
+    private static Object checkGradleEnterpriseExtension(Object extension) {
         checkIsGradleEnterpriseExtension(extension);
-        this.extension = ProxyFactory.createProxy(extension, GradleEnterpriseExtension.class);
-        this.buildScan = new BuildScanExtensionAdapter(this.extension.getBuildScan());
+        return extension;
     }
 
-    @Override
-    public BuildScanAdapter getBuildScan() {
-        return buildScan;
+    private static BuildScanAdapter createBuildScanAdapter(Object extension) {
+        Object rawBuildScan = invokeMethod(extension, "getBuildScan");
+        return new BuildScanExtensionAdapter(rawBuildScan);
     }
 
-    @Override
-    public void buildScan(Action<? super BuildScanAdapter> action) {
-        action.execute(buildScan);
+    protected ReflectionProperty<String> getServerProperty() {
+        return ReflectionProperty.create(extension, "getServer", "setServer");
     }
 
-    @Override
-    public void setServer(@Nullable String server) {
-        extension.setServer(server);
+    protected ReflectionProperty<String> getProjectIdProperty() {
+        return ReflectionProperty.create(extension, "getProjectId", "setProjectId");
     }
 
-    @Nullable
-    @Override
-    public String getServer() {
-        return extension.getServer();
+    protected ReflectionProperty<Boolean> getAllowUntrustedServerProperty() {
+        return ReflectionProperty.create(extension, "getAllowUntrustedServer", "setAllowUntrustedServer");
     }
 
-    @Override
-    public void setProjectId(@Nullable String projectId) {
-        extension.setProjectId(projectId);
-    }
-
-    @Nullable
-    @Override
-    public String getProjectId() {
-        return extension.getProjectId();
-    }
-
-    @Override
-    public void setAllowUntrustedServer(boolean allow) {
-        extension.setAllowUntrustedServer(allow);
-    }
-
-    @Override
-    public boolean getAllowUntrustedServer() {
-        return extension.getAllowUntrustedServer();
-    }
-
-    @Override
-    public void setAccessKey(@Nullable String accessKey) {
-        extension.setAccessKey(accessKey);
-    }
-
-    @Nullable
-    @Override
-    public String getAccessKey() {
-        return extension.getAccessKey();
-    }
-
-    @Nullable
-    @Override
-    public Class<? extends AbstractBuildCache> getBuildCache() {
-        return extension.getBuildCache();
+    protected ReflectionProperty<String> getAccessKeyProperty() {
+        return ReflectionProperty.create(extension, "getAccessKey", "setAccessKey");
     }
 }
