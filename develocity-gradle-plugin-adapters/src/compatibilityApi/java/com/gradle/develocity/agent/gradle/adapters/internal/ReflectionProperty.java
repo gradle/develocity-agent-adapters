@@ -2,6 +2,7 @@ package com.gradle.develocity.agent.gradle.adapters.internal;
 
 import static com.gradle.develocity.agent.gradle.adapters.internal.ReflectionUtils.*;
 
+import org.gradle.api.provider.Property;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -9,8 +10,6 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public class ReflectionProperty<T> {
-    private static final Logger LOGGER = LoggerFactory.getLogger(ReflectionProperty.class);
-
     private final Supplier<T> getter;
     private final Consumer<T> setter;
 
@@ -27,6 +26,19 @@ public class ReflectionProperty<T> {
         return new ReflectionProperty<>(
             () -> getIfSupported(obj, getterName, defaultValue),
             value -> setIfSupported(obj, setterName, value)
+        );
+    }
+
+    public static <T> ReflectionProperty<T> forProperty(Object obj, String propertyName) {
+        return new ReflectionProperty<>(
+            () -> {
+                Property<T> prop = (Property<T>) invokeMethod(obj, propertyName);
+                return prop.get();
+            },
+            value -> {
+                Property<T> prop = (Property<T>) invokeMethod(obj, propertyName);
+                prop.set(value);
+            }
         );
     }
 

@@ -5,8 +5,9 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.gradle.develocity.agent.gradle.adapters.BuildScanCaptureAdapter;
 import com.gradle.develocity.agent.gradle.adapters.internal.ProxyFactory;
-import com.gradle.scan.plugin.BuildScanCaptureSettings;
+import com.gradle.develocity.agent.gradle.adapters.shared.ReflectingBuildScanCaptureAdapter;
 import com.gradle.scan.plugin.BuildScanExtension;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -19,12 +20,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class BuildScanCapturePropertyAdapterTest {
 
     private BuildScanExtension extension;
-    private BuildScanCapturePropertyAdapter adapter;
+    private BuildScanCaptureAdapter adapter;
 
     @BeforeEach
     void setup() {
         extension = mock();
-        adapter = new BuildScanCapturePropertyAdapter(ProxyFactory.createProxy(extension, BuildScanExtension.class));
+        adapter = BuildScanCaptureExtensionAdapter.forBuildScanCaptureProperty(ProxyFactory.createProxy(extension, BuildScanExtension.class));
     }
 
     @Test

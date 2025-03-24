@@ -26,7 +26,6 @@ import com.gradle.develocity.agent.gradle.adapters.BuildScanObfuscationAdapter;
 import com.gradle.develocity.agent.gradle.adapters.PublishedBuildScanAdapter;
 import com.gradle.scan.plugin.BuildScanExtension;
 import org.gradle.api.Action;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.net.URI;
@@ -41,17 +40,8 @@ class BuildScanExtensionAdapter implements BuildScanAdapter {
 
     BuildScanExtensionAdapter(BuildScanExtension buildScan) {
         this.buildScan = buildScan;
-        this.capture = createCapture(buildScan);
+        this.capture = BuildScanCaptureExtensionAdapter.forBuildScanExtension(buildScan);
         this.obfuscation = BuildScanDataObfuscationAdapter.forBuildScanExtension(buildScan);
-    }
-
-    private static @NotNull BuildScanCaptureAdapter createCapture(BuildScanExtension buildScan) {
-        try {
-            return new BuildScanCaptureSettingsAdapter(buildScan.getCapture());
-        } catch (NoSuchMethodError e) {
-            // Earlier versions of the BuildScanExtension did not support `getCapture()`
-            return new BuildScanCapturePropertyAdapter(buildScan);
-        }
     }
 
     @Override

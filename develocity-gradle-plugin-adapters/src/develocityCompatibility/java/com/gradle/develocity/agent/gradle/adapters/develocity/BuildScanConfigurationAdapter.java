@@ -34,12 +34,12 @@ import java.util.List;
 class BuildScanConfigurationAdapter implements BuildScanAdapter {
 
     private final BuildScanConfiguration buildScan;
-    private final BuildScanCaptureConfigurationAdapter capture;
+    private final BuildScanCaptureAdapter capture;
     private final BuildScanObfuscationAdapter obfuscation;
 
     BuildScanConfigurationAdapter(BuildScanConfiguration buildScan) {
         this.buildScan = buildScan;
-        this.capture = new BuildScanCaptureConfigurationAdapter(buildScan.getCapture());
+        this.capture = BuildScanCaptureConfigurationAdapter.forBuildScanExtension(buildScan);
         this.obfuscation = BuildScanDataObfuscationConfigurationAdapter.forBuildScanExtension(buildScan);
     }
 
