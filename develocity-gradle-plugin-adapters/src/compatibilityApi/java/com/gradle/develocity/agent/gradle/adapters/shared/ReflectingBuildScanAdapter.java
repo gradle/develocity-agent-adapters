@@ -15,10 +15,10 @@ import java.net.URI;
 import java.util.Collections;
 import java.util.List;
 
-public abstract class BasicReflectingBuildScanAdapter implements BuildScanAdapter {
+public abstract class ReflectingBuildScanAdapter implements BuildScanAdapter {
     protected final Object buildScanExtension;
 
-    public BasicReflectingBuildScanAdapter(Object buildScanExtension) {
+    public ReflectingBuildScanAdapter(Object buildScanExtension) {
         this.buildScanExtension = buildScanExtension;
     }
 
@@ -45,13 +45,7 @@ public abstract class BasicReflectingBuildScanAdapter implements BuildScanAdapte
 
     @Override
     public void buildFinished(Action<? super BuildResultAdapter> action) {
-        //noinspection Anonymous2MethodRef,Convert2Lambda
-        Action<?> buildFinishedAction = buildResult -> action.execute(new BuildResultAdapter() {
-            @Override
-            public List<Throwable> getFailures() {
-                return getFailuresFromBuildResult(buildResult);
-            }
-        });
+        Action<?> buildFinishedAction = buildResult -> action.execute((BuildResultAdapter) () -> getFailuresFromBuildResult(buildResult));
         invokeMethod(buildScanExtension, "buildFinished", buildFinishedAction);
     }
 

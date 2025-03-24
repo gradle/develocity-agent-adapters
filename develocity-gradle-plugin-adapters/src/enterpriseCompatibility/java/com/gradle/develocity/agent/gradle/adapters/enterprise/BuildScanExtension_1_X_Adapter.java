@@ -24,9 +24,8 @@ import com.gradle.develocity.agent.gradle.adapters.BuildScanCaptureAdapter;
 import com.gradle.develocity.agent.gradle.adapters.BuildScanObfuscationAdapter;
 import com.gradle.develocity.agent.gradle.adapters.DevelocityAdapter;
 import com.gradle.develocity.agent.gradle.adapters.PublishedBuildScanAdapter;
-import com.gradle.develocity.agent.gradle.adapters.internal.ProxyFactory;
 import com.gradle.develocity.agent.gradle.adapters.internal.ReflectionProperty;
-import com.gradle.develocity.agent.gradle.adapters.shared.BasicReflectingBuildScanAdapter;
+import com.gradle.develocity.agent.gradle.adapters.shared.ReflectingBuildScanAdapter;
 import com.gradle.scan.plugin.BuildScanExtension;
 import org.gradle.api.Action;
 import org.gradle.caching.configuration.AbstractBuildCache;
@@ -43,46 +42,28 @@ import static com.gradle.develocity.agent.gradle.adapters.internal.ReflectionUti
  * Build Scan plugin 1.x registers the build scan extension as the root extension.
  * This adapter abstracts this detail away and allows interacting with the extension both as the root "develocity" extension and as the "buildScan" extension
  */
-public class BuildScanExtension_1_X_Adapter extends BasicReflectingBuildScanAdapter implements DevelocityAdapter {
+public class BuildScanExtension_1_X_Adapter extends ReflectingBuildScanAdapter implements DevelocityAdapter {
 
     private static final Logger LOG = LoggerFactory.getLogger(BuildScanExtension_1_X_Adapter.class);
 
-    private final BuildScanExtension extension;
-
     public BuildScanExtension_1_X_Adapter(Object extension) {
-        super(proxyBuildScanExtension(extension));
-        this.extension = (BuildScanExtension) buildScanExtension;
-    }
-
-    private static BuildScanExtension proxyBuildScanExtension(Object extension) {
+        super(extension);
         checkIsBuildScanExtension(extension);
-        return ProxyFactory.createProxy(extension, BuildScanExtension.class);
     }
 
     @Override
     protected ReflectionProperty<String> getTermsOfUseUrlProperty() {
-        return ReflectionProperty.create(extension, "getTermsOfServiceUrl", "setTermsOfServiceUrl");
+        return ReflectionProperty.create(buildScanExtension, "getTermsOfServiceUrl", "setTermsOfServiceUrl");
     }
 
     @Override
     protected ReflectionProperty<String> getTermsOfUseAgreeProperty() {
-        return ReflectionProperty.create(extension, "getTermsOfServiceAgree", "setTermsOfServiceAgree");
+        return ReflectionProperty.create(buildScanExtension, "getTermsOfServiceAgree", "setTermsOfServiceAgree");
     }
 
     @Override
     protected ReflectionProperty<Boolean> getUploadInBackgroundProperty() {
         return ReflectionProperty.unsupported("isUploadInBackground", "setUploadInBackground", false);
-    }
-
-    @Override
-    public void setUploadInBackground(boolean uploadInBackground) {
-        warnAboutUnsupportedOperation("setUploadInBackground(boolean)");
-    }
-
-    @Override
-    public boolean isUploadInBackground() {
-        warnAboutUnsupportedOperation("isUploadInBackground()");
-        return false;
     }
 
     @Override
