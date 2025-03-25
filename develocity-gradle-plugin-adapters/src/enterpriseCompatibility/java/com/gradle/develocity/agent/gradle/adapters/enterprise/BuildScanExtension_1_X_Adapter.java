@@ -34,14 +34,13 @@ import org.slf4j.LoggerFactory;
 
 import static com.gradle.develocity.agent.gradle.adapters.internal.AdapterTypeUtils.checkIsBuildScanExtension;
 import static com.gradle.develocity.agent.gradle.adapters.internal.ReflectionUtils.invokeMethod;
+import static com.gradle.develocity.agent.gradle.adapters.internal.ReflectionUtils.warnAboutUnsupportedMethod;
 
 /**
  * Build Scan plugin 1.x registers the build scan extension as the root extension.
  * This adapter abstracts this detail away and allows interacting with the extension both as the root "develocity" extension and as the "buildScan" extension
  */
 public class BuildScanExtension_1_X_Adapter extends ReflectingBuildScanAdapter implements DevelocityAdapter {
-
-    private static final Logger LOG = LoggerFactory.getLogger(BuildScanExtension_1_X_Adapter.class);
 
     public BuildScanExtension_1_X_Adapter(Object extension) {
         super(extension);
@@ -65,24 +64,24 @@ public class BuildScanExtension_1_X_Adapter extends ReflectingBuildScanAdapter i
 
     @Override
     public BuildScanObfuscationAdapter getObfuscation() {
-        warnAboutUnsupportedOperation("getObfuscation()");
+        warnAboutUnsupportedMethod("getObfuscation");
         return null;
     }
 
     @Override
     public void obfuscation(Action<? super BuildScanObfuscationAdapter> action) {
-        warnAboutUnsupportedOperation("obfuscation(Action)");
+        warnAboutUnsupportedMethod("obfuscation");
     }
 
     @Override
     public BuildScanCaptureAdapter getCapture() {
-        warnAboutUnsupportedOperation("getCapture()");
+        warnAboutUnsupportedMethod("getCapture");
         return null;
     }
 
     @Override
     public void capture(Action<? super BuildScanCaptureAdapter> action) {
-        warnAboutUnsupportedOperation("capture(Action)");
+        warnAboutUnsupportedMethod("capture");
     }
 
     @Override
@@ -103,19 +102,19 @@ public class BuildScanExtension_1_X_Adapter extends ReflectingBuildScanAdapter i
     @Nullable
     @Override
     public String getServer() {
-        warnAboutUnsupportedOperation("getServer()");
+        warnAboutUnsupportedMethod("getServer");
         return null;
     }
 
     @Override
     public void setProjectId(@Nullable String projectId) {
-        warnAboutUnsupportedOperation("setProjectId(String)");
+        warnAboutUnsupportedMethod("setProjectId");
     }
 
     @Nullable
     @Override
     public String getProjectId() {
-        warnAboutUnsupportedOperation("getProjectId()");
+        warnAboutUnsupportedMethod("getProjectId");
         return null;
     }
 
@@ -126,29 +125,25 @@ public class BuildScanExtension_1_X_Adapter extends ReflectingBuildScanAdapter i
 
     @Override
     public boolean getAllowUntrustedServer() {
-        warnAboutUnsupportedOperation("getAllowUntrustedServer()");
+        warnAboutUnsupportedMethod("getAllowUntrustedServer");
         return false;
     }
 
     @Override
     public void setAccessKey(@Nullable String accessKey) {
-        warnAboutUnsupportedOperation("setAccessKey()");
+        warnAboutUnsupportedMethod("setAccessKey");
     }
 
     @Nullable
     @Override
     public String getAccessKey() {
-        warnAboutUnsupportedOperation("getAccessKey()");
+        warnAboutUnsupportedMethod("getAccessKey");
         return null;
     }
 
     @Override
     public Class<? extends AbstractBuildCache> getBuildCache() {
-        warnAboutUnsupportedOperation("getBuildCache()");
+        warnAboutUnsupportedMethod("getBuildCache");
         return null;
-    }
-
-    private static void warnAboutUnsupportedOperation(String op) {
-        LOG.warn("Build Scan plugin version 1.x does not support '" + op + "' operation");
     }
 }
