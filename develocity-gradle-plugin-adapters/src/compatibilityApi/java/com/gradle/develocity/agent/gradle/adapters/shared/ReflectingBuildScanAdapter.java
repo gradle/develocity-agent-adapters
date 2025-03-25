@@ -75,10 +75,6 @@ public abstract class ReflectingBuildScanAdapter implements BuildScanAdapter {
         return (List<Throwable>) invokeMethod(buildResult, "getFailures");
     }
 
-    protected abstract ReflectionProperty<String> getTermsOfUseUrlProperty();
-    protected abstract ReflectionProperty<String> getTermsOfUseAgreeProperty();
-    protected abstract ReflectionProperty<Boolean> getUploadInBackgroundProperty();
-
     @Override
     public @Nullable String getTermsOfUseUrl() {
         return getTermsOfUseUrlProperty().get();
@@ -88,6 +84,8 @@ public abstract class ReflectingBuildScanAdapter implements BuildScanAdapter {
     public void setTermsOfUseUrl(String termsOfUseUrl) {
         getTermsOfUseUrlProperty().set(termsOfUseUrl);
     }
+
+    protected abstract ReflectionProperty<String> getTermsOfUseUrlProperty();
 
     @Override
     public @Nullable String getTermsOfUseAgree() {
@@ -99,6 +97,7 @@ public abstract class ReflectingBuildScanAdapter implements BuildScanAdapter {
         getTermsOfUseAgreeProperty().set(agree);
     }
 
+    protected abstract ReflectionProperty<String> getTermsOfUseAgreeProperty();
 
     @Override
     public void setUploadInBackground(boolean value) {
@@ -110,6 +109,7 @@ public abstract class ReflectingBuildScanAdapter implements BuildScanAdapter {
         return getUploadInBackgroundProperty().get();
     }
 
+    protected abstract ReflectionProperty<Boolean> getUploadInBackgroundProperty();
 
     @Override
     public void publishAlways() {

@@ -105,17 +105,17 @@ public class GradleBuildCacheConfigurationAdapter implements BuildCacheConfigura
             this.remoteBuildCache = remoteBuildCache;
 
             // Need to use reflection to access any methods declared on subtypes.
-            this.url = ReflectionProperty.create(remoteBuildCache, "getUrl", "setUrl");
-            this.server = ReflectionProperty.create(remoteBuildCache, "getServer", "setServer");
-            this.path = ReflectionProperty.create(remoteBuildCache, "getPath", "setPath");
+            this.url = ReflectionProperty.forGetterAndSetter(remoteBuildCache, "getUrl", "setUrl");
+            this.server = ReflectionProperty.forGetterAndSetter(remoteBuildCache, "getServer", "setServer");
+            this.path = ReflectionProperty.forGetterAndSetter(remoteBuildCache, "getPath", "setPath");
             if (remoteBuildCache instanceof HttpBuildCache) {
-                this.allowUntrustedServer = ReflectionProperty.create(remoteBuildCache, "isAllowUntrustedServer", "setAllowUntrustedServer", false);
-                this.allowInsecureProtocol = ReflectionProperty.create(remoteBuildCache, "isAllowInsecureProtocol", "setAllowInsecureProtocol", false);
-                this.useExpectContinue = ReflectionProperty.create(remoteBuildCache, "isUseExpectContinue", "setUseExpectContinue", false);
+                this.allowUntrustedServer = ReflectionProperty.forGetterAndSetter(remoteBuildCache, "isAllowUntrustedServer", "setAllowUntrustedServer", false);
+                this.allowInsecureProtocol = ReflectionProperty.forGetterAndSetter(remoteBuildCache, "isAllowInsecureProtocol", "setAllowInsecureProtocol", false);
+                this.useExpectContinue = ReflectionProperty.forGetterAndSetter(remoteBuildCache, "isUseExpectContinue", "setUseExpectContinue", false);
             } else {
-                this.allowUntrustedServer = ReflectionProperty.create(remoteBuildCache, "getAllowUntrustedServer", "setAllowUntrustedServer", false);
-                this.allowInsecureProtocol = ReflectionProperty.create(remoteBuildCache, "getAllowInsecureProtocol", "setAllowInsecureProtocol", false);
-                this.useExpectContinue = ReflectionProperty.create(remoteBuildCache, "getUseExpectContinue", "setUseExpectContinue", false);
+                this.allowUntrustedServer = ReflectionProperty.forGetterAndSetter(remoteBuildCache, "getAllowUntrustedServer", "setAllowUntrustedServer", false);
+                this.allowInsecureProtocol = ReflectionProperty.forGetterAndSetter(remoteBuildCache, "getAllowInsecureProtocol", "setAllowInsecureProtocol", false);
+                this.useExpectContinue = ReflectionProperty.forGetterAndSetter(remoteBuildCache, "getUseExpectContinue", "setUseExpectContinue", false);
             }
         }
 

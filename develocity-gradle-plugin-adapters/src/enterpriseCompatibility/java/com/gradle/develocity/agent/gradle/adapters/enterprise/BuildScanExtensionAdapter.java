@@ -39,17 +39,17 @@ class BuildScanExtensionAdapter extends ReflectingBuildScanAdapter {
 
     @Override
     protected ReflectionProperty<String> getTermsOfUseUrlProperty() {
-        return ReflectionProperty.create(buildScanExtension, "getTermsOfServiceUrl", "setTermsOfServiceUrl");
+        return ReflectionProperty.forGetterAndSetter(buildScanExtension, "getTermsOfServiceUrl", "setTermsOfServiceUrl");
     }
 
     @Override
     protected ReflectionProperty<String> getTermsOfUseAgreeProperty() {
-        return ReflectionProperty.create(buildScanExtension, "getTermsOfServiceAgree", "setTermsOfServiceAgree");
+        return ReflectionProperty.forGetterAndSetter(buildScanExtension, "getTermsOfServiceAgree", "setTermsOfServiceAgree");
     }
 
     @Override
     protected ReflectionProperty<Boolean> getUploadInBackgroundProperty() {
-        return ReflectionProperty.create(buildScanExtension, "isUploadInBackground", "setUploadInBackground");
+        return ReflectionProperty.forGetterAndSetter(buildScanExtension, "isUploadInBackground", "setUploadInBackground");
     }
 
     @Nullable
