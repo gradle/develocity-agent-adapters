@@ -19,16 +19,21 @@
 
 package com.gradle.develocity.agent.gradle.adapters.develocity;
 
+import static com.gradle.develocity.agent.gradle.adapters.internal.ReflectionUtils.invokeMethod;
+
 import com.gradle.develocity.agent.gradle.adapters.BuildScanCaptureAdapter;
 import com.gradle.develocity.agent.gradle.adapters.BuildScanObfuscationAdapter;
 import com.gradle.develocity.agent.gradle.adapters.PublishedBuildScanAdapter;
 import com.gradle.develocity.agent.gradle.adapters.internal.ReflectionProperty;
 import com.gradle.develocity.agent.gradle.adapters.shared.BasicReflectingBuildScanAdapter;
 import com.gradle.develocity.agent.gradle.scan.BuildScanConfiguration;
+
 import org.gradle.api.Action;
+import org.gradle.api.specs.Spec;
 import org.jetbrains.annotations.Nullable;
 
 import java.net.URI;
+import java.util.List;
 
 class BuildScanConfigurationAdapter extends BasicReflectingBuildScanAdapter {
     private final BuildScanConfiguration buildScan;
@@ -73,26 +78,6 @@ class BuildScanConfigurationAdapter extends BasicReflectingBuildScanAdapter {
         return ReflectionProperty.forProperty(buildScan, "getUploadInBackground");
     }
 
-    @Override
-    public void publishAlways() {
-        buildScan.publishing(publishing -> publishing.onlyIf(ctx -> true));
-    }
-
-    @Override
-    public void publishAlwaysIf(boolean condition) {
-        buildScan.publishing(publishing -> publishing.onlyIf(ctx -> condition));
-    }
-
-    @Override
-    public void publishOnFailure() {
-        buildScan.publishing(publishing -> publishing.onlyIf(ctx -> !ctx.getBuildResult().getFailures().isEmpty()));
-    }
-
-    @Override
-    public void publishOnFailureIf(boolean condition) {
-        buildScan.publishing(publishing -> publishing.onlyIf(ctx -> !ctx.getBuildResult().getFailures().isEmpty() && condition));
-    }
-
     @Nullable
     @Override
     public BuildScanObfuscationAdapter getObfuscation() {
@@ -113,5 +98,39 @@ class BuildScanConfigurationAdapter extends BasicReflectingBuildScanAdapter {
     @Override
     public void capture(Action<? super BuildScanCaptureAdapter> action) {
         action.execute(this.capture);
+    }
+
+    @Override
+    public void publishAlways() {
+        publishOnlyIf((Spec<?>) ctx -> true);
+    }
+
+    @Override
+    public void publishAlwaysIf(boolean condition) {
+        Spec<?> publishingContextSpec = ctx -> condition;
+        publishOnlyIf(publishingContextSpec);
+    }
+
+    @Override
+    public void publishOnFailure() {
+        publishOnlyIf(ctx -> {
+            Object buildResult = invokeMethod(ctx, "getBuildResult");
+            List<Throwable> failures = (List<Throwable>) invokeMethod(buildResult, "getFailures");
+            return !failures.isEmpty();
+        });
+    }
+
+    @Override
+    public void publishOnFailureIf(boolean condition) {
+        publishOnlyIf(ctx -> {
+            Object buildResult = invokeMethod(ctx, "getBuildResult");
+            List<Throwable> failures = (List<Throwable>) invokeMethod(buildResult, "getFailures");
+            return !failures.isEmpty() && condition;
+        });
+    }
+
+    private void publishOnlyIf(Spec<?> publishingContextSpec) {
+        Action<?> publishingConfig = publishing -> invokeMethod(publishing, "onlyIf", publishingContextSpec);
+        invokeMethod(buildScanExtension, "publishing", publishingConfig);
     }
 }
