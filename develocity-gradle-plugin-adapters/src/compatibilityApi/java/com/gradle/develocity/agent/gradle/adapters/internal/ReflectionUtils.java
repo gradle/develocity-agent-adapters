@@ -84,14 +84,6 @@ public class ReflectionUtils {
         return true;
     }
 
-    public static void withMethodSupported(Object obj, String method, Runnable action) {
-        if (isMethodSupported(obj, method)) {
-            action.run();
-        } else {
-            warnAboutUnsupportedMethod(method);
-        }
-    }
-
     public static boolean isMethodSupported(Object obj, String method) {
         return Arrays.stream(obj.getClass().getMethods())
             .anyMatch(it -> it.getName().equals(method));
