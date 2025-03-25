@@ -37,6 +37,7 @@ import org.slf4j.LoggerFactory;
 import java.net.URI;
 
 import static com.gradle.develocity.agent.gradle.adapters.internal.AdapterTypeUtils.checkIsBuildScanExtension;
+import static com.gradle.develocity.agent.gradle.adapters.internal.ReflectionUtils.invokeMethod;
 
 /**
  * Build Scan plugin 1.x registers the build scan extension as the root extension.
@@ -56,21 +57,6 @@ public class BuildScanExtension_1_X_Adapter extends BasicReflectingBuildScanAdap
     private static BuildScanExtension proxyBuildScanExtension(Object extension) {
         checkIsBuildScanExtension(extension);
         return ProxyFactory.createProxy(extension, BuildScanExtension.class);
-    }
-
-    @Override
-    public void buildScanPublished(Action<? super PublishedBuildScanAdapter> action) {
-        extension.buildScanPublished(scan -> action.execute(new PublishedBuildScanAdapter() {
-            @Override
-            public String getBuildScanId() {
-                return scan.getBuildScanId();
-            }
-
-            @Override
-            public URI getBuildScanUri() {
-                return scan.getBuildScanUri();
-            }
-        }));
     }
 
     @Override
@@ -97,26 +83,6 @@ public class BuildScanExtension_1_X_Adapter extends BasicReflectingBuildScanAdap
     public boolean isUploadInBackground() {
         warnAboutUnsupportedOperation("isUploadInBackground()");
         return false;
-    }
-
-    @Override
-    public void publishAlways() {
-        extension.publishAlways();
-    }
-
-    @Override
-    public void publishAlwaysIf(boolean condition) {
-        extension.publishAlwaysIf(condition);
-    }
-
-    @Override
-    public void publishOnFailure() {
-        extension.publishOnFailure();
-    }
-
-    @Override
-    public void publishOnFailureIf(boolean condition) {
-        extension.publishOnFailureIf(condition);
     }
 
     @Override
@@ -153,7 +119,7 @@ public class BuildScanExtension_1_X_Adapter extends BasicReflectingBuildScanAdap
 
     @Override
     public void setServer(@Nullable String server) {
-        extension.setServer(server);
+        invokeMethod(buildScanExtension, "setServer", server);
     }
 
     @Nullable
@@ -177,7 +143,7 @@ public class BuildScanExtension_1_X_Adapter extends BasicReflectingBuildScanAdap
 
     @Override
     public void setAllowUntrustedServer(boolean allow) {
-        extension.setAllowUntrustedServer(allow);
+        invokeMethod(buildScanExtension, "setAllowUntrustedServer", allow);
     }
 
     @Override

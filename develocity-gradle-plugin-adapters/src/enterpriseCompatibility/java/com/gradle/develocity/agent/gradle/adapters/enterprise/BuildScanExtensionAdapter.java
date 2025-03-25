@@ -44,21 +44,6 @@ class BuildScanExtensionAdapter extends BasicReflectingBuildScanAdapter {
     }
 
     @Override
-    public void buildScanPublished(Action<? super PublishedBuildScanAdapter> action) {
-        buildScan.buildScanPublished(scan -> action.execute(new PublishedBuildScanAdapter() {
-            @Override
-            public String getBuildScanId() {
-                return scan.getBuildScanId();
-            }
-
-            @Override
-            public URI getBuildScanUri() {
-                return scan.getBuildScanUri();
-            }
-        }));
-    }
-
-    @Override
     protected ReflectionProperty<String> getTermsOfUseUrlProperty() {
         return ReflectionProperty.create(buildScan, "getTermsOfServiceUrl", "setTermsOfServiceUrl");
     }
@@ -71,26 +56,6 @@ class BuildScanExtensionAdapter extends BasicReflectingBuildScanAdapter {
     @Override
     protected ReflectionProperty<Boolean> getUploadInBackgroundProperty() {
         return ReflectionProperty.create(buildScan, "isUploadInBackground", "setUploadInBackground");
-    }
-
-    @Override
-    public void publishAlways() {
-        buildScan.publishAlways();
-    }
-
-    @Override
-    public void publishAlwaysIf(boolean condition) {
-        buildScan.publishAlwaysIf(condition);
-    }
-
-    @Override
-    public void publishOnFailure() {
-        buildScan.publishOnFailure();
-    }
-
-    @Override
-    public void publishOnFailureIf(boolean condition) {
-        buildScan.publishOnFailureIf(condition);
     }
 
     @Nullable

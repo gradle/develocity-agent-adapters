@@ -4,12 +4,14 @@ import static com.gradle.develocity.agent.gradle.adapters.internal.ReflectionUti
 
 import com.gradle.develocity.agent.gradle.adapters.BuildResultAdapter;
 import com.gradle.develocity.agent.gradle.adapters.BuildScanAdapter;
+import com.gradle.develocity.agent.gradle.adapters.PublishedBuildScanAdapter;
 import com.gradle.develocity.agent.gradle.adapters.internal.ReflectionProperty;
 import com.gradle.develocity.agent.gradle.adapters.internal.ReflectionUtils;
 
 import org.gradle.api.Action;
 import org.jetbrains.annotations.Nullable;
 
+import java.net.URI;
 import java.util.Collections;
 import java.util.List;
 
@@ -51,6 +53,23 @@ public abstract class BasicReflectingBuildScanAdapter implements BuildScanAdapte
             }
         });
         invokeMethod(buildScanExtension, "buildFinished", buildFinishedAction);
+    }
+
+    @Override
+    public void buildScanPublished(Action<? super PublishedBuildScanAdapter> action) {
+        Action<?> publishedBuildScanAction =scan -> action.execute(new PublishedBuildScanAdapter() {
+            @Override
+            public String getBuildScanId() {
+                return (String) invokeMethod(scan, "getBuildScanId");
+            }
+
+            @Override
+            public URI getBuildScanUri() {
+                return (URI) invokeMethod(scan, "getBuildScanUri");
+            }
+        });
+
+        invokeMethod(buildScanExtension, "buildScanPublished", publishedBuildScanAction);
     }
 
     protected List<Throwable> getFailuresFromBuildResult(Object buildResult) {
@@ -95,5 +114,26 @@ public abstract class BasicReflectingBuildScanAdapter implements BuildScanAdapte
     @Override
     public boolean isUploadInBackground() {
         return getUploadInBackgroundProperty().get();
+    }
+
+
+    @Override
+    public void publishAlways() {
+        invokeMethod(buildScanExtension, "publishAlways");
+    }
+
+    @Override
+    public void publishAlwaysIf(boolean condition) {
+        invokeMethod(buildScanExtension, "publishAlwaysIf", condition);
+    }
+
+    @Override
+    public void publishOnFailure() {
+        invokeMethod(buildScanExtension, "publishOnFailure");
+    }
+
+    @Override
+    public void publishOnFailureIf(boolean condition) {
+        invokeMethod(buildScanExtension, "publishOnFailureIf", condition);
     }
 }
