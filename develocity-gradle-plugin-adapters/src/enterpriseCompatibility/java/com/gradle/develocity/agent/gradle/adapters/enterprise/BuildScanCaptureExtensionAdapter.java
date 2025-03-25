@@ -51,9 +51,8 @@ public class BuildScanCaptureExtensionAdapter {
     public static @NotNull ReflectingBuildScanCaptureAdapter forBuildScanCaptureProperty(Object buildScan) {
         return new ReflectingBuildScanCaptureAdapter(
             ReflectionProperty.forGetterAndSetter(buildScan, "isCaptureTaskInputFiles", "setCaptureTaskInputFiles"),
-            // TODO: We know these methods will never exist: could hard-code an 'unsupported' property
-            ReflectionProperty.forGetterAndSetter(buildScan, "isBuildLogging", "setBuildLogging", true),
-            ReflectionProperty.forGetterAndSetter(buildScan, "isTestLogging", "setTestLogging", true)
+            ReflectionProperty.unsupported("isBuildLogging", "setBuildLogging", true),
+            ReflectionProperty.unsupported("isTestLogging", "setTestLogging", true)
         );
     }
 
