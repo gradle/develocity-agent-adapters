@@ -23,17 +23,14 @@ import com.gradle.develocity.agent.gradle.adapters.BuildScanAdapter;
 import com.gradle.develocity.agent.gradle.adapters.BuildScanCaptureAdapter;
 import com.gradle.develocity.agent.gradle.adapters.BuildScanObfuscationAdapter;
 import com.gradle.develocity.agent.gradle.adapters.DevelocityAdapter;
-import com.gradle.develocity.agent.gradle.adapters.PublishedBuildScanAdapter;
 import com.gradle.develocity.agent.gradle.adapters.internal.ReflectionProperty;
 import com.gradle.develocity.agent.gradle.adapters.shared.ReflectingBuildScanAdapter;
-import com.gradle.scan.plugin.BuildScanExtension;
+
 import org.gradle.api.Action;
 import org.gradle.caching.configuration.AbstractBuildCache;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.net.URI;
 
 import static com.gradle.develocity.agent.gradle.adapters.internal.AdapterTypeUtils.checkIsBuildScanExtension;
 import static com.gradle.develocity.agent.gradle.adapters.internal.ReflectionUtils.invokeMethod;
@@ -53,12 +50,12 @@ public class BuildScanExtension_1_X_Adapter extends ReflectingBuildScanAdapter i
 
     @Override
     protected ReflectionProperty<String> getTermsOfUseUrlProperty() {
-        return ReflectionProperty.create(buildScanExtension, "getTermsOfServiceUrl", "setTermsOfServiceUrl");
+        return ReflectionProperty.forGetterAndSetter(buildScanExtension, "getTermsOfServiceUrl", "setTermsOfServiceUrl");
     }
 
     @Override
     protected ReflectionProperty<String> getTermsOfUseAgreeProperty() {
-        return ReflectionProperty.create(buildScanExtension, "getTermsOfServiceAgree", "setTermsOfServiceAgree");
+        return ReflectionProperty.forGetterAndSetter(buildScanExtension, "getTermsOfServiceAgree", "setTermsOfServiceAgree");
     }
 
     @Override

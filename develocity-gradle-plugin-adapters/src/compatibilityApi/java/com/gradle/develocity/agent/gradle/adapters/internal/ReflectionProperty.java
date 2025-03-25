@@ -3,8 +3,6 @@ package com.gradle.develocity.agent.gradle.adapters.internal;
 import static com.gradle.develocity.agent.gradle.adapters.internal.ReflectionUtils.*;
 
 import org.gradle.api.provider.Property;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -28,11 +26,11 @@ public class ReflectionProperty<T> {
         );
     }
 
-    public static <T> ReflectionProperty<T> create(Object obj, String getterName, String setterName) {
-        return create(obj, getterName, setterName, null);
+    public static <T> ReflectionProperty<T> forGetterAndSetter(Object obj, String getterName, String setterName) {
+        return forGetterAndSetter(obj, getterName, setterName, null);
     }
 
-    public static <T> ReflectionProperty<T> create(Object obj, String getterName, String setterName, T defaultValue) {
+    public static <T> ReflectionProperty<T> forGetterAndSetter(Object obj, String getterName, String setterName, T defaultValue) {
         return new ReflectionProperty<>(
             () -> getIfSupported(obj, getterName, defaultValue),
             value -> setIfSupported(obj, setterName, value)

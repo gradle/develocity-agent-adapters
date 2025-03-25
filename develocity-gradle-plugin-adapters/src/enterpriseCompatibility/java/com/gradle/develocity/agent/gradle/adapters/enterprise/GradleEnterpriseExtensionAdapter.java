@@ -44,18 +44,18 @@ public class GradleEnterpriseExtensionAdapter extends ReflectingDevelocityAdapte
     }
 
     protected ReflectionProperty<String> getServerProperty() {
-        return ReflectionProperty.create(extension, "getServer", "setServer");
+        return ReflectionProperty.forGetterAndSetter(extension, "getServer", "setServer");
     }
 
     protected ReflectionProperty<String> getProjectIdProperty() {
-        return ReflectionProperty.create(extension, "getProjectId", "setProjectId");
+        return ReflectionProperty.forGetterAndSetter(extension, "getProjectId", "setProjectId");
     }
 
     protected ReflectionProperty<Boolean> getAllowUntrustedServerProperty() {
-        return ReflectionProperty.create(extension, "getAllowUntrustedServer", "setAllowUntrustedServer");
+        return ReflectionProperty.forGetterAndSetter(extension, "getAllowUntrustedServer", "setAllowUntrustedServer");
     }
 
     protected ReflectionProperty<String> getAccessKeyProperty() {
-        return ReflectionProperty.create(extension, "getAccessKey", "setAccessKey");
+        return ReflectionProperty.forGetterAndSetter(extension, "getAccessKey", "setAccessKey");
     }
 }
