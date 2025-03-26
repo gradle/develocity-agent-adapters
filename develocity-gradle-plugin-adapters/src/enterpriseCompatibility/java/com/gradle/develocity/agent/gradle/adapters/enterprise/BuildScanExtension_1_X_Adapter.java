@@ -19,162 +19,69 @@
 
 package com.gradle.develocity.agent.gradle.adapters.enterprise;
 
-import com.gradle.develocity.agent.gradle.adapters.BuildResultAdapter;
 import com.gradle.develocity.agent.gradle.adapters.BuildScanAdapter;
 import com.gradle.develocity.agent.gradle.adapters.BuildScanCaptureAdapter;
 import com.gradle.develocity.agent.gradle.adapters.BuildScanObfuscationAdapter;
 import com.gradle.develocity.agent.gradle.adapters.DevelocityAdapter;
-import com.gradle.develocity.agent.gradle.adapters.PublishedBuildScanAdapter;
-import com.gradle.develocity.agent.gradle.adapters.internal.ProxyFactory;
-import com.gradle.scan.plugin.BuildScanExtension;
+import com.gradle.develocity.agent.gradle.adapters.internal.ReflectionProperty;
+import com.gradle.develocity.agent.gradle.adapters.shared.ReflectingBuildScanAdapter;
+
 import org.gradle.api.Action;
 import org.gradle.caching.configuration.AbstractBuildCache;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.net.URI;
-import java.util.Collections;
-import java.util.List;
-
 import static com.gradle.develocity.agent.gradle.adapters.internal.AdapterTypeUtils.checkIsBuildScanExtension;
+import static com.gradle.develocity.agent.gradle.adapters.internal.ReflectionUtils.invokeMethod;
+import static com.gradle.develocity.agent.gradle.adapters.internal.ReflectionUtils.warnAboutUnsupportedMethod;
 
 /**
  * Build Scan plugin 1.x registers the build scan extension as the root extension.
  * This adapter abstracts this detail away and allows interacting with the extension both as the root "develocity" extension and as the "buildScan" extension
  */
-public class BuildScanExtension_1_X_Adapter implements DevelocityAdapter, BuildScanAdapter {
-
-    private static final Logger LOG = LoggerFactory.getLogger(BuildScanExtension_1_X_Adapter.class);
-
-    private final BuildScanExtension extension;
+public class BuildScanExtension_1_X_Adapter extends ReflectingBuildScanAdapter implements DevelocityAdapter {
 
     public BuildScanExtension_1_X_Adapter(Object extension) {
+        super(extension);
         checkIsBuildScanExtension(extension);
-        this.extension = ProxyFactory.createProxy(extension, BuildScanExtension.class);
     }
 
     @Override
-    public void background(Action<? super BuildScanAdapter> action) {
-        extension.background(__ -> action.execute(this));
+    protected ReflectionProperty<String> getTermsOfUseUrlProperty() {
+        return ReflectionProperty.forGetterAndSetter(buildScanExtension, "getTermsOfServiceUrl", "setTermsOfServiceUrl");
     }
 
     @Override
-    public void tag(String tag) {
-        extension.tag(tag);
+    protected ReflectionProperty<String> getTermsOfUseAgreeProperty() {
+        return ReflectionProperty.forGetterAndSetter(buildScanExtension, "getTermsOfServiceAgree", "setTermsOfServiceAgree");
     }
 
     @Override
-    public void value(String name, String value) {
-        extension.value(name, value);
-    }
-
-    @Override
-    public void link(String name, String url) {
-        extension.link(name, url);
-    }
-
-    @Override
-    public void buildFinished(Action<? super BuildResultAdapter> action) {
-        //noinspection Convert2Lambda
-        extension.buildFinished(buildResult -> action.execute(new BuildResultAdapter() {
-            @Override
-            public List<Throwable> getFailures() {
-                return Collections.singletonList(buildResult.getFailure());
-            }
-        }));
-    }
-
-    @Override
-    public void buildScanPublished(Action<? super PublishedBuildScanAdapter> action) {
-        extension.buildScanPublished(scan -> action.execute(new PublishedBuildScanAdapter() {
-            @Override
-            public String getBuildScanId() {
-                return scan.getBuildScanId();
-            }
-
-            @Override
-            public URI getBuildScanUri() {
-                return scan.getBuildScanUri();
-            }
-        }));
-    }
-
-    @Override
-    public void setTermsOfUseUrl(String termsOfServiceUrl) {
-        extension.setTermsOfServiceUrl(termsOfServiceUrl);
-    }
-
-    @Nullable
-    @Override
-    public String getTermsOfUseUrl() {
-        warnAboutUnsupportedOperation("getTermsOfServiceUrl()");
-        return null;
-    }
-
-    @Override
-    public void setTermsOfUseAgree(@Nullable String agree) {
-        extension.setTermsOfServiceAgree(agree);
-    }
-
-    @Nullable
-    @Override
-    public String getTermsOfUseAgree() {
-        warnAboutUnsupportedOperation("getTermsOfServiceAgree()");
-        return null;
-    }
-
-    @Override
-    public void setUploadInBackground(boolean uploadInBackground) {
-        warnAboutUnsupportedOperation("setUploadInBackground(boolean)");
-    }
-
-    @Override
-    public boolean isUploadInBackground() {
-        warnAboutUnsupportedOperation("isUploadInBackground()");
-        return false;
-    }
-
-    @Override
-    public void publishAlways() {
-        extension.publishAlways();
-    }
-
-    @Override
-    public void publishAlwaysIf(boolean condition) {
-        extension.publishAlwaysIf(condition);
-    }
-
-    @Override
-    public void publishOnFailure() {
-        extension.publishOnFailure();
-    }
-
-    @Override
-    public void publishOnFailureIf(boolean condition) {
-        extension.publishOnFailureIf(condition);
+    protected ReflectionProperty<Boolean> getUploadInBackgroundProperty() {
+        return ReflectionProperty.unsupported("isUploadInBackground", "setUploadInBackground", false);
     }
 
     @Override
     public BuildScanObfuscationAdapter getObfuscation() {
-        warnAboutUnsupportedOperation("getObfuscation()");
+        warnAboutUnsupportedMethod("getObfuscation");
         return null;
     }
 
     @Override
     public void obfuscation(Action<? super BuildScanObfuscationAdapter> action) {
-        warnAboutUnsupportedOperation("obfuscation(Action)");
+        warnAboutUnsupportedMethod("obfuscation");
     }
 
     @Override
     public BuildScanCaptureAdapter getCapture() {
-        warnAboutUnsupportedOperation("getCapture()");
+        warnAboutUnsupportedMethod("getCapture");
         return null;
     }
 
     @Override
     public void capture(Action<? super BuildScanCaptureAdapter> action) {
-        warnAboutUnsupportedOperation("capture(Action)");
+        warnAboutUnsupportedMethod("capture");
     }
 
     @Override
@@ -189,58 +96,54 @@ public class BuildScanExtension_1_X_Adapter implements DevelocityAdapter, BuildS
 
     @Override
     public void setServer(@Nullable String server) {
-        extension.setServer(server);
+        invokeMethod(buildScanExtension, "setServer", server);
     }
 
     @Nullable
     @Override
     public String getServer() {
-        warnAboutUnsupportedOperation("getServer()");
+        warnAboutUnsupportedMethod("getServer");
         return null;
     }
 
     @Override
     public void setProjectId(@Nullable String projectId) {
-        warnAboutUnsupportedOperation("setProjectId(String)");
+        warnAboutUnsupportedMethod("setProjectId");
     }
 
     @Nullable
     @Override
     public String getProjectId() {
-        warnAboutUnsupportedOperation("getProjectId()");
+        warnAboutUnsupportedMethod("getProjectId");
         return null;
     }
 
     @Override
     public void setAllowUntrustedServer(boolean allow) {
-        extension.setAllowUntrustedServer(allow);
+        invokeMethod(buildScanExtension, "setAllowUntrustedServer", allow);
     }
 
     @Override
     public boolean getAllowUntrustedServer() {
-        warnAboutUnsupportedOperation("getAllowUntrustedServer()");
+        warnAboutUnsupportedMethod("getAllowUntrustedServer");
         return false;
     }
 
     @Override
     public void setAccessKey(@Nullable String accessKey) {
-        warnAboutUnsupportedOperation("setAccessKey()");
+        warnAboutUnsupportedMethod("setAccessKey");
     }
 
     @Nullable
     @Override
     public String getAccessKey() {
-        warnAboutUnsupportedOperation("getAccessKey()");
+        warnAboutUnsupportedMethod("getAccessKey");
         return null;
     }
 
     @Override
     public Class<? extends AbstractBuildCache> getBuildCache() {
-        warnAboutUnsupportedOperation("getBuildCache()");
+        warnAboutUnsupportedMethod("getBuildCache");
         return null;
-    }
-
-    private static void warnAboutUnsupportedOperation(String op) {
-        LOG.warn("Build Scan plugin version 1.x does not support '" + op + "' operation");
     }
 }

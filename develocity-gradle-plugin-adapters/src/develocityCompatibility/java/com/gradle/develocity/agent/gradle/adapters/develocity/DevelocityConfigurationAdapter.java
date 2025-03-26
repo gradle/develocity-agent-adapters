@@ -19,83 +19,47 @@
 
 package com.gradle.develocity.agent.gradle.adapters.develocity;
 
-import com.gradle.develocity.agent.gradle.DevelocityConfiguration;
 import com.gradle.develocity.agent.gradle.adapters.BuildScanAdapter;
 import com.gradle.develocity.agent.gradle.adapters.DevelocityAdapter;
-import com.gradle.develocity.agent.gradle.adapters.internal.ProxyFactory;
-import org.gradle.api.Action;
-import org.gradle.caching.configuration.AbstractBuildCache;
-import org.jetbrains.annotations.Nullable;
+import com.gradle.develocity.agent.gradle.adapters.internal.ReflectionProperty;
+import com.gradle.develocity.agent.gradle.adapters.shared.ReflectingDevelocityAdapter;
 
 import static com.gradle.develocity.agent.gradle.adapters.internal.AdapterTypeUtils.checkIsDevelocityConfiguration;
+import static com.gradle.develocity.agent.gradle.adapters.internal.ReflectionUtils.invokeMethod;
 
-public class DevelocityConfigurationAdapter implements DevelocityAdapter {
-
-    private final DevelocityConfiguration configuration;
-    private final BuildScanConfigurationAdapter buildScan;
+public class DevelocityConfigurationAdapter extends ReflectingDevelocityAdapter implements DevelocityAdapter {
 
     public DevelocityConfigurationAdapter(Object configuration) {
+        super(checkDevelocityConfiguration(configuration), createBuildScanAdapter(configuration));
+    }
+
+    private static Object checkDevelocityConfiguration(Object configuration) {
         checkIsDevelocityConfiguration(configuration);
-        this.configuration = ProxyFactory.createProxy(configuration, DevelocityConfiguration.class);
-        this.buildScan = new BuildScanConfigurationAdapter(this.configuration.getBuildScan());
+        return configuration;
+    }
+
+    private static BuildScanAdapter createBuildScanAdapter(Object configuration) {
+        Object rawBuildScan = invokeMethod(configuration, "getBuildScan");
+        return new BuildScanConfigurationAdapter(rawBuildScan);
     }
 
     @Override
-    public BuildScanAdapter getBuildScan() {
-        return buildScan;
+    protected ReflectionProperty<String> getServerProperty() {
+        return ReflectionProperty.forProperty(extension, "getServer");
     }
 
     @Override
-    public void buildScan(Action<? super BuildScanAdapter> action) {
-        action.execute(buildScan);
+    protected ReflectionProperty<String> getProjectIdProperty() {
+        return ReflectionProperty.forProperty(extension, "getProjectId");
     }
 
     @Override
-    public void setServer(@Nullable String server) {
-        configuration.getServer().set(server);
-    }
-
-    @Nullable
-    @Override
-    public String getServer() {
-        return configuration.getServer().getOrNull();
+    protected ReflectionProperty<Boolean> getAllowUntrustedServerProperty() {
+        return ReflectionProperty.forProperty(extension, "getAllowUntrustedServer");
     }
 
     @Override
-    public void setProjectId(@Nullable String projectId) {
-        configuration.getProjectId().set(projectId);
-    }
-
-    @Nullable
-    @Override
-    public String getProjectId() {
-        return configuration.getProjectId().getOrNull();
-    }
-
-    @Override
-    public void setAllowUntrustedServer(boolean allow) {
-        configuration.getAllowUntrustedServer().set(allow);
-    }
-
-    @Override
-    public boolean getAllowUntrustedServer() {
-        return configuration.getAllowUntrustedServer().get();
-    }
-
-    @Override
-    public void setAccessKey(@Nullable String accessKey) {
-        configuration.getAccessKey().set(accessKey);
-    }
-
-    @Nullable
-    @Override
-    public String getAccessKey() {
-        return configuration.getAccessKey().getOrNull();
-    }
-
-    @Nullable
-    @Override
-    public Class<? extends AbstractBuildCache> getBuildCache() {
-        return configuration.getBuildCache();
+    protected ReflectionProperty<String> getAccessKeyProperty() {
+        return ReflectionProperty.forProperty(extension, "getAccessKey");
     }
 }

@@ -19,138 +19,37 @@
 
 package com.gradle.develocity.agent.gradle.adapters.enterprise;
 
-import com.gradle.develocity.agent.gradle.adapters.BuildResultAdapter;
-import com.gradle.develocity.agent.gradle.adapters.BuildScanAdapter;
 import com.gradle.develocity.agent.gradle.adapters.BuildScanCaptureAdapter;
 import com.gradle.develocity.agent.gradle.adapters.BuildScanObfuscationAdapter;
-import com.gradle.develocity.agent.gradle.adapters.PublishedBuildScanAdapter;
-import com.gradle.scan.plugin.BuildScanCaptureSettings;
-import com.gradle.scan.plugin.BuildScanExtension;
+import com.gradle.develocity.agent.gradle.adapters.internal.ReflectionProperty;
+import com.gradle.develocity.agent.gradle.adapters.shared.ReflectingBuildScanAdapter;
+
 import org.gradle.api.Action;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.net.URI;
-import java.util.Collections;
-import java.util.List;
-
-class BuildScanExtensionAdapter implements BuildScanAdapter {
-
-    private final BuildScanExtension buildScan;
+class BuildScanExtensionAdapter extends ReflectingBuildScanAdapter {
     private final BuildScanCaptureAdapter capture;
-    private final BuildScanDataObfuscationAdapter obfuscation;
+    private final BuildScanObfuscationAdapter obfuscation;
 
-    BuildScanExtensionAdapter(BuildScanExtension buildScan) {
-        this.buildScan = buildScan;
-        this.capture = createCapture(buildScan);
-        this.obfuscation = new BuildScanDataObfuscationAdapter(buildScan.getObfuscation());
-    }
-
-    private static @NotNull BuildScanCaptureAdapter createCapture(BuildScanExtension buildScan) {
-        try {
-            return new BuildScanCaptureSettingsAdapter(buildScan.getCapture());
-        } catch (NoSuchMethodError e) {
-            // Earlier versions of the BuildScanExtension did not support `getCapture()`
-            return new BuildScanCapturePropertyAdapter(buildScan);
-        }
+    BuildScanExtensionAdapter(Object buildScan) {
+        super(buildScan);
+        this.capture = BuildScanCaptureExtensionAdapter.forBuildScanExtension(buildScan);
+        this.obfuscation = BuildScanDataObfuscationAdapter.forBuildScanExtension(buildScan);
     }
 
     @Override
-    public void background(Action<? super BuildScanAdapter> action) {
-        buildScan.background(__ -> action.execute(this));
+    protected ReflectionProperty<String> getTermsOfUseUrlProperty() {
+        return ReflectionProperty.forGetterAndSetter(buildScanExtension, "getTermsOfServiceUrl", "setTermsOfServiceUrl");
     }
 
     @Override
-    public void tag(String tag) {
-        buildScan.tag(tag);
+    protected ReflectionProperty<String> getTermsOfUseAgreeProperty() {
+        return ReflectionProperty.forGetterAndSetter(buildScanExtension, "getTermsOfServiceAgree", "setTermsOfServiceAgree");
     }
 
     @Override
-    public void value(String name, String value) {
-        buildScan.value(name, value);
-    }
-
-    @Override
-    public void link(String name, String url) {
-        buildScan.link(name, url);
-    }
-
-    @Override
-    public void buildFinished(Action<? super BuildResultAdapter> action) {
-        //noinspection Convert2Lambda
-        buildScan.buildFinished(buildResult -> action.execute(new BuildResultAdapter() {
-            @Override
-            public List<Throwable> getFailures() {
-                return Collections.singletonList(buildResult.getFailure());
-            }
-        }));
-    }
-
-    @Override
-    public void buildScanPublished(Action<? super PublishedBuildScanAdapter> action) {
-        buildScan.buildScanPublished(scan -> action.execute(new PublishedBuildScanAdapter() {
-            @Override
-            public String getBuildScanId() {
-                return scan.getBuildScanId();
-            }
-
-            @Override
-            public URI getBuildScanUri() {
-                return scan.getBuildScanUri();
-            }
-        }));
-    }
-
-    @Override
-    public void setTermsOfUseUrl(String termsOfServiceUrl) {
-        buildScan.setTermsOfServiceUrl(termsOfServiceUrl);
-    }
-
-    @Nullable
-    @Override
-    public String getTermsOfUseUrl() {
-        return buildScan.getTermsOfServiceUrl();
-    }
-
-    @Override
-    public void setTermsOfUseAgree(@Nullable String agree) {
-        buildScan.setTermsOfServiceAgree(agree);
-    }
-
-    @Nullable
-    @Override
-    public String getTermsOfUseAgree() {
-        return buildScan.getTermsOfServiceAgree();
-    }
-
-    @Override
-    public void setUploadInBackground(boolean uploadInBackground) {
-        buildScan.setUploadInBackground(uploadInBackground);
-    }
-
-    @Override
-    public boolean isUploadInBackground() {
-        return buildScan.isUploadInBackground();
-    }
-
-    @Override
-    public void publishAlways() {
-        buildScan.publishAlways();
-    }
-
-    @Override
-    public void publishAlwaysIf(boolean condition) {
-        buildScan.publishAlwaysIf(condition);
-    }
-
-    @Override
-    public void publishOnFailure() {
-        buildScan.publishOnFailure();
-    }
-
-    @Override
-    public void publishOnFailureIf(boolean condition) {
-        buildScan.publishOnFailureIf(condition);
+    protected ReflectionProperty<Boolean> getUploadInBackgroundProperty() {
+        return ReflectionProperty.forGetterAndSetter(buildScanExtension, "isUploadInBackground", "setUploadInBackground");
     }
 
     @Nullable

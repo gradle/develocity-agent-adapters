@@ -20,32 +20,20 @@
 package com.gradle.develocity.agent.gradle.adapters.enterprise;
 
 import com.gradle.develocity.agent.gradle.adapters.BuildScanObfuscationAdapter;
-import com.gradle.scan.plugin.BuildScanDataObfuscation;
+import com.gradle.develocity.agent.gradle.adapters.internal.ReflectionUtils;
+import com.gradle.develocity.agent.gradle.adapters.shared.ReflectingBuildScanObfuscationAdapter;
 
-import java.net.InetAddress;
-import java.util.List;
-import java.util.function.Function;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.VisibleForTesting;
 
-final class BuildScanDataObfuscationAdapter implements BuildScanObfuscationAdapter {
-
-    private final BuildScanDataObfuscation obfuscation;
-
-    BuildScanDataObfuscationAdapter(BuildScanDataObfuscation obfuscation) {
-        this.obfuscation = obfuscation;
+public class BuildScanDataObfuscationAdapter {
+    public static BuildScanObfuscationAdapter forBuildScanExtension(Object buildScan) {
+        Object obfuscation = ReflectionUtils.invokeMethod(buildScan, "getObfuscation");
+        return forObfuscationExtension(obfuscation);
     }
 
-    @Override
-    public void username(Function<? super String, ? extends String> obfuscator) {
-        obfuscation.username(obfuscator);
-    }
-
-    @Override
-    public void hostname(Function<? super String, ? extends String> obfuscator) {
-        obfuscation.hostname(obfuscator);
-    }
-
-    @Override
-    public void ipAddresses(Function<? super List<InetAddress>, ? extends List<String>> obfuscator) {
-        obfuscation.ipAddresses(obfuscator);
+    @VisibleForTesting
+    public static @NotNull BuildScanObfuscationAdapter forObfuscationExtension(Object obfuscation) {
+        return new ReflectingBuildScanObfuscationAdapter(obfuscation);
     }
 }

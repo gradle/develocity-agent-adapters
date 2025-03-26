@@ -17,56 +17,52 @@
  *
  */
 
-package com.gradle.develocity.agent.gradle.adapters.enterprise;
+package com.gradle.develocity.agent.gradle.adapters.shared;
 
 import com.gradle.develocity.agent.gradle.adapters.BuildScanCaptureAdapter;
-import com.gradle.scan.plugin.BuildScanExtension;
+import com.gradle.develocity.agent.gradle.adapters.internal.ReflectionProperty;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.VisibleForTesting;
 
-class BuildScanCapturePropertyAdapter implements BuildScanCaptureAdapter {
-    private static final Logger LOG = LoggerFactory.getLogger(BuildScanCapturePropertyAdapter.class);
+public class ReflectingBuildScanCaptureAdapter implements BuildScanCaptureAdapter {
+    private final ReflectionProperty<Boolean> fileFingerprints;
+    private final ReflectionProperty<Boolean> buildLogging;
+    private final ReflectionProperty<Boolean> testLogging;
 
-    private final BuildScanExtension buildScan;
-
-    BuildScanCapturePropertyAdapter(BuildScanExtension buildScan) {
-        this.buildScan = buildScan;
+    public ReflectingBuildScanCaptureAdapter(ReflectionProperty<Boolean> fileFingerprints, ReflectionProperty<Boolean> buildLogging, ReflectionProperty<Boolean> testLogging) {
+        this.fileFingerprints = fileFingerprints;
+        this.buildLogging = buildLogging;
+        this.testLogging = testLogging;
     }
 
     @Override
     public void setFileFingerprints(boolean capture) {
-        this.buildScan.setCaptureTaskInputFiles(capture);
+        fileFingerprints.set(capture);
     }
 
     @Override
     public boolean isFileFingerprints() {
-        return this.buildScan.isCaptureTaskInputFiles();
+        return fileFingerprints.get();
     }
 
     @Override
     public void setBuildLogging(boolean capture) {
-        warnAboutUnsupportedOperation("capture.buildLogging");
+        buildLogging.set(capture);
     }
 
     @Override
     public boolean isBuildLogging() {
-        warnAboutUnsupportedOperation("capture.buildLogging");
-        return true; // Build logging will always be captured
+        return buildLogging.get();
     }
 
     @Override
     public void setTestLogging(boolean capture) {
-        warnAboutUnsupportedOperation("capture.testLogging");
+        testLogging.set(capture);
     }
 
     @Override
     public boolean isTestLogging() {
-        warnAboutUnsupportedOperation("capture.testLogging");
-        return true; // Test logging will always be captured
-    }
-
-    private static void warnAboutUnsupportedOperation(String op) {
-        LOG.warn("Build Scan Extension does not support '" + op + "' operation");
+        return testLogging.get();
     }
 }

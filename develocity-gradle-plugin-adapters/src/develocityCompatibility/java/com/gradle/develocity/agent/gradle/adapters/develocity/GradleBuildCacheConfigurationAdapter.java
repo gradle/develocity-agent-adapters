@@ -1,17 +1,35 @@
+/*
+ *
+ *  * Copyright 2024-2024 the original author or authors.
+ *  *
+ *  * Licensed under the Apache License, Version 2.0 (the "License");
+ *  * you may not use this file except in compliance with the License.
+ *  * You may obtain a copy of the License at
+ *  *
+ *  *      http://www.apache.org/licenses/LICENSE-2.0
+ *  *
+ *  * Unless required by applicable law or agreed to in writing, software
+ *  * distributed under the License is distributed on an "AS IS" BASIS,
+ *  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  * See the License for the specific language governing permissions and
+ *  * limitations under the License.
+ *
+ *
+ */
+
 package com.gradle.develocity.agent.gradle.adapters.develocity;
 
+import static com.gradle.develocity.agent.gradle.adapters.internal.ReflectionUtils.invokeMethod;
+
 import com.gradle.develocity.agent.gradle.adapters.BuildCacheConfigurationAdapter;
+import com.gradle.develocity.agent.gradle.adapters.internal.ReflectionProperty;
 
 import org.gradle.caching.configuration.BuildCache;
 import org.gradle.caching.configuration.BuildCacheConfiguration;
 import org.gradle.caching.http.HttpBuildCache;
 import org.gradle.caching.local.DirectoryBuildCache;
 import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.net.URI;
 
 /**
@@ -22,7 +40,6 @@ import java.net.URI;
  * - com.gradle.enterprise.gradleplugin.GradleEnterpriseBuildCache
  */
 public class GradleBuildCacheConfigurationAdapter implements BuildCacheConfigurationAdapter {
-    private static final Logger LOG = LoggerFactory.getLogger(GradleBuildCacheConfigurationAdapter.class);
 
     private final BuildCacheConfiguration buildCache;
 
@@ -40,8 +57,6 @@ public class GradleBuildCacheConfigurationAdapter implements BuildCacheConfigura
         BuildCache remoteConfig = buildCache.getRemote();
         if (remoteConfig == null) {
             return null;
-        } else if (remoteConfig instanceof HttpBuildCache) {
-            return new HttpRemoteBuildCache((HttpBuildCache) remoteConfig);
         } else {
             return new ReflectingRemoteBuildCache(remoteConfig);
         }
@@ -95,114 +110,32 @@ public class GradleBuildCacheConfigurationAdapter implements BuildCacheConfigura
         }
     }
 
-    private static class HttpRemoteBuildCache implements RemoteBuildCacheAdapter {
-        private final HttpBuildCache remoteBuildCache;
-
-        private HttpRemoteBuildCache(HttpBuildCache remoteBuildCache) {
-            this.remoteBuildCache = remoteBuildCache;
-        }
-
-        @Override
-        public boolean isEnabled() {
-            return remoteBuildCache.isEnabled();
-        }
-
-        @Override
-        public void setEnabled(boolean enabled) {
-            remoteBuildCache.setEnabled(enabled);
-        }
-
-        @Override
-        public boolean isPush() {
-            return remoteBuildCache.isPush();
-        }
-
-        @Override
-        public void setPush(boolean push) {
-            remoteBuildCache.setPush(push);
-        }
-
-        @Override
-        public @Nullable String getUrl() {
-            URI url = remoteBuildCache.getUrl();
-            return url == null ? null : url.toASCIIString();
-        }
-
-        @Override
-        public void setUrl(String url) {
-            remoteBuildCache.setUrl(url);
-        }
-
-        @Override
-        public @Nullable String getServer() {
-            warnAboutUnsupportedMethod("getServer");
-            return null;
-        }
-
-        @Override
-        public void setServer(@Nullable String server) {
-            warnAboutUnsupportedMethod("setServer");
-        }
-
-        @Override
-        public @Nullable String getPath() {
-            warnAboutUnsupportedMethod("getPath");
-            return null;
-        }
-
-        @Override
-        public void setPath(@Nullable String path) {
-            warnAboutUnsupportedMethod("setPath");
-        }
-
-        @Override
-        public boolean getAllowUntrustedServer() {
-            return remoteBuildCache.isAllowUntrustedServer();
-        }
-
-        @Override
-        public void setAllowUntrustedServer(boolean allowUntrusted) {
-            remoteBuildCache.setAllowUntrustedServer(allowUntrusted);
-        }
-
-        @Override
-        public boolean getAllowInsecureProtocol() {
-            return remoteBuildCache.isAllowInsecureProtocol();
-        }
-
-        @Override
-        public void setAllowInsecureProtocol(boolean allowInsecureProtocol) {
-            remoteBuildCache.setAllowInsecureProtocol(allowInsecureProtocol);
-        }
-
-        @Override
-        public boolean getUseExpectContinue() {
-            warnAboutUnsupportedMethod("getUseExpectContinue");
-            return false;
-        }
-
-        @Override
-        public void setUseExpectContinue(boolean useExpectContinue) {
-            warnAboutUnsupportedMethod("setUseExpectContinue");
-        }
-
-        @Override
-        public @Nullable Object getUsernameAndPassword() {
-            warnAboutUnsupportedMethod("getUsernameAndPassword");
-            return null;
-        }
-
-        @Override
-        public void usernameAndPassword(String username, String password) {
-            warnAboutUnsupportedMethod("usernameAndPassword");
-        }
-    }
-
     private static class ReflectingRemoteBuildCache implements RemoteBuildCacheAdapter {
         private final BuildCache remoteBuildCache;
+        private final ReflectionProperty<URI> url;
+        private final ReflectionProperty<String> server;
+        private final ReflectionProperty<String> path;
+        private final ReflectionProperty<Boolean> allowUntrustedServer;
+        private final ReflectionProperty<Boolean> allowInsecureProtocol;
+        private final ReflectionProperty<Boolean> useExpectContinue;
 
         private ReflectingRemoteBuildCache(BuildCache remoteBuildCache) {
+            // Don't need to use Reflection for core Gradle type `BuildCache`.
             this.remoteBuildCache = remoteBuildCache;
+
+            // Need to use reflection to access any methods declared on subtypes.
+            this.url = ReflectionProperty.forGetterAndSetter(remoteBuildCache, "getUrl", "setUrl");
+            this.server = ReflectionProperty.forGetterAndSetter(remoteBuildCache, "getServer", "setServer");
+            this.path = ReflectionProperty.forGetterAndSetter(remoteBuildCache, "getPath", "setPath");
+            if (remoteBuildCache instanceof HttpBuildCache) {
+                this.allowUntrustedServer = ReflectionProperty.forGetterAndSetter(remoteBuildCache, "isAllowUntrustedServer", "setAllowUntrustedServer", false);
+                this.allowInsecureProtocol = ReflectionProperty.forGetterAndSetter(remoteBuildCache, "isAllowInsecureProtocol", "setAllowInsecureProtocol", false);
+                this.useExpectContinue = ReflectionProperty.forGetterAndSetter(remoteBuildCache, "isUseExpectContinue", "setUseExpectContinue", false);
+            } else {
+                this.allowUntrustedServer = ReflectionProperty.forGetterAndSetter(remoteBuildCache, "getAllowUntrustedServer", "setAllowUntrustedServer", false);
+                this.allowInsecureProtocol = ReflectionProperty.forGetterAndSetter(remoteBuildCache, "getAllowInsecureProtocol", "setAllowInsecureProtocol", false);
+                this.useExpectContinue = ReflectionProperty.forGetterAndSetter(remoteBuildCache, "getUseExpectContinue", "setUseExpectContinue", false);
+            }
         }
 
         @Override
@@ -227,123 +160,74 @@ public class GradleBuildCacheConfigurationAdapter implements BuildCacheConfigura
 
         @Override
         public @Nullable String getUrl() {
-            warnAboutUnsupportedMethod("getUrl");
-            return null;
+            URI value = url.get();
+            return value == null ? null : value.toASCIIString();
         }
 
         @Override
-        public void setUrl(@Nullable String url) {
-            warnAboutUnsupportedMethod("setUrl");
+        public void setUrl(@Nullable String value) {
+            URI uriValue = value == null ? null : URI.create(value);
+            url.set(uriValue);
         }
 
         @Override
         public @Nullable String getServer() {
-            return getStringProperty("getServer");
+            return server.get();
         }
 
         @Override
-        public void setServer(@Nullable String server) {
-            setStringProperty("setServer", server);
+        public void setServer(@Nullable String value) {
+            server.set(value);
         }
 
         @Override
         public @Nullable String getPath() {
-            return getStringProperty("getPath");
+            return path.get();
         }
 
         @Override
-        public void setPath(@Nullable String path) {
-            setStringProperty("setPath", path);
+        public void setPath(@Nullable String value) {
+            path.set(value);
         }
 
         @Override
         public boolean getAllowUntrustedServer() {
-            return getBooleanProperty("getAllowUntrustedServer");
+            return allowUntrustedServer.get();
         }
 
         @Override
-        public void setAllowUntrustedServer(boolean allowUntrusted) {
-            setBooleanProperty("setAllowUntrustedServer", allowUntrusted);
+        public void setAllowUntrustedServer(boolean value) {
+            allowUntrustedServer.set(value);
         }
 
         @Override
         public boolean getAllowInsecureProtocol() {
-            return getBooleanProperty("getAllowInsecureProtocol");
+            return allowInsecureProtocol.get();
         }
 
         @Override
-        public void setAllowInsecureProtocol(boolean allowInsecureProtocol) {
-            setBooleanProperty("setAllowInsecureProtocol", allowInsecureProtocol);
+        public void setAllowInsecureProtocol(boolean value) {
+            allowInsecureProtocol.set(value);
         }
 
         @Override
         public boolean getUseExpectContinue() {
-            return getBooleanProperty("getUseExpectContinue");
+            return useExpectContinue.get();
         }
 
         @Override
-        public void setUseExpectContinue(boolean useExpectContinue) {
-            setBooleanProperty("setUseExpectContinue", useExpectContinue);
+        public void setUseExpectContinue(boolean value) {
+            useExpectContinue.set(value);
         }
 
         @Override
         public @Nullable Object getUsernameAndPassword() {
-            return getProperty("getUsernameAndPassword");
+            return invokeMethod(remoteBuildCache, "getUsernameAndPassword");
         }
 
         @Override
         public void usernameAndPassword(String username, String password) {
-            try {
-                Method setter = remoteBuildCache.getClass().getDeclaredMethod("usernameAndPassword", String.class, String.class);
-                setter.invoke(remoteBuildCache, username, password);
-            } catch (InvocationTargetException | IllegalAccessException e) {
-                throw new RuntimeException(e);
-            } catch (NoSuchMethodException e) {
-                warnAboutUnsupportedMethod("usernameAndPassword");
-            }
+            invokeMethod(remoteBuildCache, "usernameAndPassword", username, password);
         }
-
-        private Object getProperty(String name) {
-            try {
-                Method getter = remoteBuildCache.getClass().getDeclaredMethod(name);
-                return getter.invoke(remoteBuildCache);
-            } catch (InvocationTargetException | IllegalAccessException e) {
-                throw new RuntimeException(e);
-            } catch (NoSuchMethodException e) {
-                warnAboutUnsupportedMethod(name);
-                return null;
-            }
-        }
-
-        private <T> void setProperty(String name, Class<T> type, T value) {
-            try {
-                Method setter = remoteBuildCache.getClass().getDeclaredMethod(name, type);
-                setter.invoke(remoteBuildCache, value);
-            } catch (InvocationTargetException | IllegalAccessException e) {
-                throw new RuntimeException(e);
-            } catch (NoSuchMethodException e) {
-                warnAboutUnsupportedMethod(name);
-            }
-        }
-
-        private String getStringProperty(String name) {
-            return (String) getProperty(name);
-        }
-
-        private void setStringProperty(String name, String value) {
-            setProperty(name, String.class, value);
-        }
-
-        private boolean getBooleanProperty(String name) {
-            return Boolean.TRUE.equals(getProperty(name));
-        }
-
-        private void setBooleanProperty(String name, boolean value) {
-            setProperty(name, Boolean.TYPE, value);
-        }
-    }
-
-    private static void warnAboutUnsupportedMethod(String name) {
-        LOG.warn("Remote Build Cache instance does not support the {} method", name);
     }
 }

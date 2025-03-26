@@ -20,43 +20,26 @@
 package com.gradle.develocity.agent.gradle.adapters.develocity;
 
 import com.gradle.develocity.agent.gradle.adapters.BuildScanCaptureAdapter;
-import com.gradle.develocity.agent.gradle.scan.BuildScanCaptureConfiguration;
+import com.gradle.develocity.agent.gradle.adapters.internal.ReflectionProperty;
+import com.gradle.develocity.agent.gradle.adapters.internal.ReflectionUtils;
+import com.gradle.develocity.agent.gradle.adapters.shared.ReflectingBuildScanCaptureAdapter;
 
-class BuildScanCaptureConfigurationAdapter implements BuildScanCaptureAdapter {
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.VisibleForTesting;
 
-    private final BuildScanCaptureConfiguration capture;
 
-    BuildScanCaptureConfigurationAdapter(BuildScanCaptureConfiguration capture) {
-        this.capture = capture;
+public class BuildScanCaptureConfigurationAdapter {
+    public static BuildScanCaptureAdapter forBuildScanExtension(Object buildScan) {
+        Object capture = ReflectionUtils.invokeMethod(buildScan, "getCapture");
+        return forCaptureConfiguration(capture);
     }
 
-    @Override
-    public void setFileFingerprints(boolean capture) {
-        this.capture.getFileFingerprints().set(capture);
-    }
-
-    @Override
-    public boolean isFileFingerprints() {
-        return capture.getFileFingerprints().get();
-    }
-
-    @Override
-    public void setBuildLogging(boolean capture) {
-        this.capture.getBuildLogging().set(capture);
-    }
-
-    @Override
-    public boolean isBuildLogging() {
-        return capture.getBuildLogging().get();
-    }
-
-    @Override
-    public void setTestLogging(boolean capture) {
-        this.capture.getTestLogging().set(capture);
-    }
-
-    @Override
-    public boolean isTestLogging() {
-        return capture.getTestLogging().get();
+    @VisibleForTesting
+    static @NotNull ReflectingBuildScanCaptureAdapter forCaptureConfiguration(Object capture) {
+        return new ReflectingBuildScanCaptureAdapter(
+            ReflectionProperty.forProperty(capture, "getFileFingerprints"),
+            ReflectionProperty.forProperty(capture, "getBuildLogging"),
+            ReflectionProperty.forProperty(capture, "getTestLogging")
+        );
     }
 }
