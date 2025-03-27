@@ -54,7 +54,7 @@ class BuildScanConfigurationAdapter extends ReflectingBuildScanAdapter {
 
     @Override
     protected ReflectionProperty<Boolean> getUploadInBackgroundProperty() {
-        return ReflectionProperty.forProperty(buildScanExtension, "getUploadInBackground");
+        return ReflectionProperty.forProperty(buildScanExtension, "getUploadInBackground", true);
     }
 
     @Nullable

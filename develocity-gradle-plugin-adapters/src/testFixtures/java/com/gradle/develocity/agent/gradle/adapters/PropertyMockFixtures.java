@@ -2,6 +2,7 @@ package com.gradle.develocity.agent.gradle.adapters;
 
 import org.gradle.api.provider.Property;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 
@@ -20,6 +21,7 @@ public final class PropertyMockFixtures {
         Property<T> prop = (Property<T>) mock(Property.class);
         lenient().when(prop.get()).thenReturn(value);
         lenient().when(prop.getOrNull()).thenReturn(value);
+        lenient().when(prop.getOrElse(any())).thenReturn(value);
         return prop;
     }
 

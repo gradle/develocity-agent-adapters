@@ -137,7 +137,7 @@ public class BuildScanConfigurationAdapterTest {
         adapter.isUploadInBackground();
 
         // then
-        verify(configuration.getUploadInBackground()).get();
+        verify(configuration.getUploadInBackground()).getOrElse(true);
     }
 
     @Test

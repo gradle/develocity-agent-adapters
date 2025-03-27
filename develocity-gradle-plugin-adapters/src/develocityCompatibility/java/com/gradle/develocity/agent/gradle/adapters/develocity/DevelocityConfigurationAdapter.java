@@ -55,7 +55,7 @@ public class DevelocityConfigurationAdapter extends ReflectingDevelocityAdapter 
 
     @Override
     protected ReflectionProperty<Boolean> getAllowUntrustedServerProperty() {
-        return ReflectionProperty.forProperty(extension, "getAllowUntrustedServer");
+        return ReflectionProperty.forProperty(extension, "getAllowUntrustedServer", true);
     }
 
     @Override
