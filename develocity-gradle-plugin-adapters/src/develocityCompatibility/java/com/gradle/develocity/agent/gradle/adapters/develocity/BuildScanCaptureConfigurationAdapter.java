@@ -37,9 +37,9 @@ public class BuildScanCaptureConfigurationAdapter {
     @VisibleForTesting
     static @NotNull ReflectingBuildScanCaptureAdapter forCaptureConfiguration(Object capture) {
         return new ReflectingBuildScanCaptureAdapter(
-            ReflectionProperty.forProperty(capture, "getFileFingerprints"),
-            ReflectionProperty.forProperty(capture, "getBuildLogging"),
-            ReflectionProperty.forProperty(capture, "getTestLogging")
+            ReflectionProperty.forProperty(capture, "getFileFingerprints", true),
+            ReflectionProperty.forProperty(capture, "getBuildLogging", true),
+            ReflectionProperty.forProperty(capture, "getTestLogging", true)
         );
     }
 }

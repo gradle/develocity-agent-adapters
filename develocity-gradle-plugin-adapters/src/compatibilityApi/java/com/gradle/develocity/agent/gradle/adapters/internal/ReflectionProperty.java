@@ -57,10 +57,14 @@ public class ReflectionProperty<T> {
     }
 
     public static <T> ReflectionProperty<T> forProperty(Object obj, String propertyName) {
+        return forProperty(obj, propertyName, null);
+    }
+
+    public static <T> ReflectionProperty<T> forProperty(Object obj, String propertyName, T defaultValue) {
         return new ReflectionProperty<>(
             () -> {
                 Property<T> prop = (Property<T>) invokeMethod(obj, propertyName);
-                return prop.get();
+                return prop.getOrElse(defaultValue);
             },
             value -> {
                 Property<T> prop = (Property<T>) invokeMethod(obj, propertyName);
