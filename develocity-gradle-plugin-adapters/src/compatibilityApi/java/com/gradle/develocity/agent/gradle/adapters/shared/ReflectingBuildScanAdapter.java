@@ -34,6 +34,8 @@ import java.net.URI;
 import java.util.Collections;
 import java.util.List;
 
+// Retain anonymous classes to support config-cache serialization in Gradle 7.x
+@SuppressWarnings("Convert2Lambda")
 public abstract class ReflectingBuildScanAdapter implements BuildScanAdapter {
     protected final Object buildScanExtension;
 
@@ -58,29 +60,49 @@ public abstract class ReflectingBuildScanAdapter implements BuildScanAdapter {
 
     @Override
     public void background(Action<? super BuildScanAdapter> action) {
-        Action<?> buildScanConfigurationAction = __ -> action.execute(this);
+        Action<?> buildScanConfigurationAction = new Action<Object>() {
+            @Override
+            public void execute(Object __) {
+                action.execute(ReflectingBuildScanAdapter.this);
+            }
+        };
         invokeMethod(buildScanExtension, "background", buildScanConfigurationAction);
     }
 
     @Override
     public void buildFinished(Action<? super BuildResultAdapter> action) {
-        Action<?> buildFinishedAction = buildResult -> action.execute((BuildResultAdapter) () -> getFailuresFromBuildResult(buildResult));
+        Action<?> buildFinishedAction = new Action<Object>() {
+            @Override
+            public void execute(Object buildResult) {
+                action.execute(new BuildResultAdapter() {
+                    @Override
+                    public List<Throwable> getFailures() {
+                        return ReflectingBuildScanAdapter.this.getFailuresFromBuildResult(buildResult);
+                    }
+                });
+            }
+        };
         invokeMethod(buildScanExtension, "buildFinished", buildFinishedAction);
     }
 
     @Override
     public void buildScanPublished(Action<? super PublishedBuildScanAdapter> action) {
-        Action<?> publishedBuildScanAction =scan -> action.execute(new PublishedBuildScanAdapter() {
+        Action<?> publishedBuildScanAction = new Action<Object>() {
             @Override
-            public String getBuildScanId() {
-                return (String) invokeMethod(scan, "getBuildScanId");
-            }
+            public void execute(Object scan) {
+                action.execute(new PublishedBuildScanAdapter() {
+                    @Override
+                    public String getBuildScanId() {
+                        return (String) invokeMethod(scan, "getBuildScanId");
+                    }
 
-            @Override
-            public URI getBuildScanUri() {
-                return (URI) invokeMethod(scan, "getBuildScanUri");
+                    @Override
+                    public URI getBuildScanUri() {
+                        return (URI) invokeMethod(scan, "getBuildScanUri");
+                    }
+                });
             }
-        });
+        };
 
         invokeMethod(buildScanExtension, "buildScanPublished", publishedBuildScanAction);
     }

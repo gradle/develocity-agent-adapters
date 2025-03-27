@@ -26,6 +26,8 @@ import org.gradle.api.provider.Property;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+// Retain anonymous classes to support config-cache in Gradle 7.x
+@SuppressWarnings("Convert2Lambda")
 public class ReflectionProperty<T> {
     private final Supplier<T> getter;
     private final Consumer<T> setter;
@@ -37,11 +39,19 @@ public class ReflectionProperty<T> {
 
     public static <T> ReflectionProperty<T> unsupported(String getterName, String setterName, T defaultValue) {
         return new ReflectionProperty<>(
-            () -> {
-                warnAboutUnsupportedMethod(getterName);
-                return defaultValue;
+            new Supplier<T>() {
+                @Override
+                public T get() {
+                    warnAboutUnsupportedMethod(getterName);
+                    return defaultValue;
+                }
             },
-            value -> warnAboutUnsupportedMethod(setterName)
+            new Consumer<T>() {
+                @Override
+                public void accept(T value) {
+                    warnAboutUnsupportedMethod(setterName);
+                }
+            }
         );
     }
 
@@ -51,8 +61,18 @@ public class ReflectionProperty<T> {
 
     public static <T> ReflectionProperty<T> forGetterAndSetter(Object obj, String getterName, String setterName, T defaultValue) {
         return new ReflectionProperty<>(
-            () -> getIfSupported(obj, getterName, defaultValue),
-            value -> setIfSupported(obj, setterName, value)
+            new Supplier<T>() {
+                @Override
+                public T get() {
+                    return getIfSupported(obj, getterName, defaultValue);
+                }
+            },
+            new Consumer<T>() {
+                @Override
+                public void accept(T value) {
+                    setIfSupported(obj, setterName, value);
+                }
+            }
         );
     }
 
@@ -62,13 +82,19 @@ public class ReflectionProperty<T> {
 
     public static <T> ReflectionProperty<T> forProperty(Object obj, String propertyName, T defaultValue) {
         return new ReflectionProperty<>(
-            () -> {
-                Property<T> prop = (Property<T>) invokeMethod(obj, propertyName);
-                return prop.getOrElse(defaultValue);
+            new Supplier<T>() {
+                @Override
+                public T get() {
+                    Property<T> prop = (Property<T>) invokeMethod(obj, propertyName);
+                    return prop.getOrElse(defaultValue);
+                }
             },
-            value -> {
-                Property<T> prop = (Property<T>) invokeMethod(obj, propertyName);
-                prop.set(value);
+            new Consumer<T>() {
+                @Override
+                public void accept(T value) {
+                    Property<T> prop = (Property<T>) invokeMethod(obj, propertyName);
+                    prop.set(value);
+                }
             }
         );
     }
