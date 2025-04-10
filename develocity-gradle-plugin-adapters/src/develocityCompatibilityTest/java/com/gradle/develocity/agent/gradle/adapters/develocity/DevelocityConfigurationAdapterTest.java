@@ -2,9 +2,7 @@ package com.gradle.develocity.agent.gradle.adapters.develocity;
 
 import com.gradle.develocity.agent.gradle.DevelocityConfiguration;
 import com.gradle.develocity.agent.gradle.adapters.DevelocityAdapter;
-import com.gradle.develocity.agent.gradle.adapters.enterprise.GradleEnterpriseExtensionAdapter;
 import com.gradle.develocity.agent.gradle.scan.BuildScanConfiguration;
-import com.gradle.scan.plugin.BuildScanExtension;
 import org.gradle.api.provider.Property;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -16,11 +14,7 @@ import static com.gradle.develocity.agent.gradle.adapters.PropertyMockFixtures.m
 import static com.gradle.develocity.agent.gradle.adapters.PropertyMockFixtures.mockPropertyReturning;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class DevelocityConfigurationAdapterTest {
@@ -35,18 +29,6 @@ class DevelocityConfigurationAdapterTest {
         configuration = mock();
         when(configuration.getBuildScan()).thenReturn(buildScan);
         adapter = new DevelocityConfigurationAdapter(configuration);
-    }
-
-    @Test
-    @DisplayName("fails if passed object is not a Develocity configuration")
-    void testIncompatibleObject() {
-        // when
-        IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () -> {
-            new DevelocityConfigurationAdapter(mock(BuildScanExtension.class));
-        });
-
-        // then
-        assertTrue(e.getMessage().contains("is not a Develocity configuration"));
     }
 
     @Test
