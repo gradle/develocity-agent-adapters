@@ -1,6 +1,6 @@
 [versions]
 mockito = "4.11.0"
-jupiter = "5.13.1"
+jupiter = "5.13.2"
 
 [plugins]
 nexus-publish = { id = "io.github.gradle-nexus.publish-plugin", version = "2.0.0" }
