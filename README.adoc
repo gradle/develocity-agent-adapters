@@ -56,3 +56,6 @@ publishConditionally(new DevelocityConfigurationAdapter(develocity));
 Object gradleEnterprise = settings.getExtensions().getByName("gradleEnterprise");
 publishConditionally(new GradleEnterpriseExtensionAdapter(gradleEnterprise));
 ----
+
+== License
+The Develocity Plugin/Extension Adapters are open-source software released under the https://www.apache.org/licenses/LICENSE-2.0.html[Apache 2.0 License].
