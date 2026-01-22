@@ -49,7 +49,7 @@ public class GradleBuildCacheConfigurationAdapter implements BuildCacheConfigura
 
     @Override
     public LocalBuildCacheAdapter getLocal() {
-        return new LocalBuildCache(buildCache.getLocal());
+        return new ReflectingLocalBuildCache(buildCache.getLocal());
     }
 
     @Override
@@ -62,11 +62,13 @@ public class GradleBuildCacheConfigurationAdapter implements BuildCacheConfigura
         }
     }
 
-    private static class LocalBuildCache implements LocalBuildCacheAdapter {
+    private static class ReflectingLocalBuildCache implements LocalBuildCacheAdapter {
         private final DirectoryBuildCache localBuildCache;
+        private final ReflectionProperty<Integer> removeUnusedEntriesAfterDays;
 
-        private LocalBuildCache(DirectoryBuildCache localBuildCache) {
+        private ReflectingLocalBuildCache(DirectoryBuildCache localBuildCache) {
             this.localBuildCache = localBuildCache;
+            this.removeUnusedEntriesAfterDays = ReflectionProperty.forGetterAndSetter(localBuildCache, "getRemoveUnusedEntriesAfterDays", "setRemoveUnusedEntriesAfterDays");
         }
 
         @Override
@@ -101,12 +103,12 @@ public class GradleBuildCacheConfigurationAdapter implements BuildCacheConfigura
 
         @Override
         public int getRemoveUnusedEntriesAfterDays() {
-            return localBuildCache.getRemoveUnusedEntriesAfterDays();
+            return removeUnusedEntriesAfterDays.get();
         }
 
         @Override
         public void setRemoveUnusedEntriesAfterDays(int days) {
-            localBuildCache.setRemoveUnusedEntriesAfterDays(days);
+            removeUnusedEntriesAfterDays.set(days);
         }
     }
 
