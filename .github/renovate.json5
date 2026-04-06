@@ -21,6 +21,13 @@
         "org.mockito:mockito-core"
       ],
       "allowedVersions": "^4.0.0"
+    },
+    {
+      "description": "JUnit 6+ requires Java 17+, but this project targets Java 8",
+      "matchDepNames": [
+        "org.junit:junit-bom"
+      ],
+      "allowedVersions": "^5.0.0"
     }
   ]
 }
