@@ -30,8 +30,9 @@ java {
 
 tasks.withType<JavaCompile>().configureEach {
     javaCompiler = javaToolchains.compilerFor {
-        languageVersion.set(JavaLanguageVersion.of(8))
+        languageVersion.set(JavaLanguageVersion.of(17))
     }
+    options.release.set(8)
 }
 
 sourceSets {
