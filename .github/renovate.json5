@@ -28,6 +28,13 @@
         "org.junit:junit-bom"
       ],
       "allowedVersions": "^5.0.0"
+    },
+    {
+      // Auto-merge GitHub Actions digest re-pins. Major version bumps are
+      // excluded by the update types and stay manual.
+      "matchManagers": ["github-actions"],
+      "matchUpdateTypes": ["digest", "pinDigest"],
+      "automerge": true,
     }
   ]
 }
