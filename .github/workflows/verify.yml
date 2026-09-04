@@ -7,6 +7,9 @@ on:
   pull_request:
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 # https://stackoverflow.com/a/72408109/16358266
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
