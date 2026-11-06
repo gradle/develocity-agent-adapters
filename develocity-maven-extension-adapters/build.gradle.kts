@@ -26,6 +26,18 @@ dependencies {
     "develocityCompatibilityTestImplementation"(libs.maven.core)
     "develocityCompatibilityTestImplementation"(libs.develocity.extension)
     "develocityCompatibilityTestRuntimeOnly"(libs.log4j)
+
+    constraints {
+        // maven-core 3.10.0 brings in Guava 33.7.1, which is affected by GHSA-xxph-c9ww-hj94.
+        // Remove once a maven-core release depends on Guava 33.7.2 or later.
+        listOf(
+            "compatibilityApiCompileOnly",
+            "enterpriseCompatibilityCompileOnly",
+            "enterpriseCompatibilityTestImplementation",
+            "develocityCompatibilityCompileOnly",
+            "develocityCompatibilityTestImplementation",
+        ).forEach { add(it, libs.guava) }
+    }
 }
 
 develocityAdaptersPublication {
