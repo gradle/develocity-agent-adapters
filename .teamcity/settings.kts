@@ -18,9 +18,6 @@ project {
         "develocity-maven-extension-adapters",
         "Develocity Maven Extension Adapters"
     )
-    params {
-        param("env.DEVELOCITY_ACCESS_KEY", "%gbt.public.develocity.access.key%")
-    }
 }
 
 fun Project.publishDevelocityApiAdapters(projectPath: String, projectDisplayName: String) {
